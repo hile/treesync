@@ -4,7 +4,7 @@ from treesync.version import __version__
 
 setup(
     name='treesync',
-    keywords='rsync tree sync',
+    keywords='rsync tree sync automation',
     description='python utility to rsync push / pull configured trees with known arguments',
     author='Ilkka Tuohela',
     author_email='hile@iki.fi',
@@ -19,7 +19,8 @@ setup(
         ],
     },
     install_requires=(
-        'systematic',
+        'ruamel.yaml>==0.16.5',
+        'systematic>==4.8.7',
     ),
     setup_requires=['pytest-runner'],
     tests_require=(

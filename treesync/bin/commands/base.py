@@ -35,3 +35,12 @@ class TreeSyncCommand(ScriptCommand):
             print('configuration: {}'.format(self.config.path))
 
         return args
+
+    def print_tree_details(self, tree):
+        """
+        Print details for tree
+        """
+        print(tree.name)
+        print('  source: {}'.format(tree.src))
+        print('  target: {}'.format(tree.dest))
+        print('   flags: {}'.format(' '.join(tree.flags)))

@@ -8,4 +8,4 @@ class ListCommand(TreeSyncCommand):
 
     def run(self, args):
         for tree in self.config.trees:
-            print(tree.src, tree.dest, tree.flags)
+            print(tree.name)
