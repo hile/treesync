@@ -19,7 +19,8 @@ setup(
         ],
     },
     install_requires=(
-        'pathlib-tree>=1.0.0',
+        'cli-toolkit>=1.0.0',
+        'pathlib-tree>=1.0.1',
     ),
     classifiers=[
         'Environment :: Console',
