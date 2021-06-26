@@ -22,6 +22,7 @@ EXCLUDES_FILE = TEST_DATA.joinpath('rsync.exclude')
 EXCLUDES_CONFIG = TEST_DATA.joinpath('excludes.yml')
 ICONV_CONFIG = TEST_DATA.joinpath('iconv.yml')
 MINIMAL_CONFIG = TEST_DATA.joinpath('minimal.yml')
+SERVER_FLAGS_CONFIG = TEST_DATA.joinpath('servers.yml')
 
 
 def test_sync_configuration_empty():
@@ -29,6 +30,9 @@ def test_sync_configuration_empty():
     Test loading empty sync configuration
     """
     config = Configuration()
+
+    assert isinstance(config.__repr__(), str)
+
     # pylint: disable=no-member
     assert config.defaults is not None
 
@@ -77,8 +81,8 @@ def test_sync_target_attributes_minimal():
     assert target.settings.ignore_default_excludes is False
     assert target.settings.excludes_file is None
     assert target.settings.iconv is None
-    assert target.settings.excludes.value == []
-    assert target.settings.flags.value == []
+    assert target.settings.excludes.__values__ == []
+    assert target.settings.flags.__values__ == []
 
     expected_excludes = SKIPPED_PATHS + DEFAULT_EXCLUDES
     assert target.excluded == sorted(set(expected_excludes))
@@ -115,6 +119,48 @@ def test_sync_target_attributes_excluded():
     with pytest.raises(ValueError):
         # pylint: disable=pointless-statement
         target.flags
+
+
+def test_sync_configuration_remote_servers():
+    """
+    Test loading configuration with multiple servers and server specific flags
+    """
+    expected_target_count = 3
+    config = Configuration(SERVER_FLAGS_CONFIG)
+    assert len(config.targets.names) == expected_target_count
+
+    # Check the __iter__ method as side effect
+    targets = list(config.targets)
+    assert len(targets) == expected_target_count
+
+    no_flags_target = config.targets.get_target('data-remote')
+    assert no_flags_target.settings.destination_server_settings is None
+    assert no_flags_target.settings.destination_server_flags == []
+
+    # Server with empty (but defined) configuration section settings
+    dummy_target = config.targets.get_target('dummy')
+    assert dummy_target.settings.destination_server_settings == {}
+    assert dummy_target.settings.destination_server_flags == []
+
+    # Server with iconv and rsync path flags
+    flags_target = config.targets.get_target('data')
+    assert flags_target.settings.destination_server_settings is not None
+    expected_flags = [
+        '--iconv=UTF-8-MAC,UTF-8',
+        '--rsync-path=/usr/local/bin/rsync'
+    ]
+    assert flags_target.settings.destination_server_flags == expected_flags
+
+    # Target flags include expected flags and defaults
+    target_flags = flags_target.flags
+    for flag in expected_flags:
+        assert flag in target_flags
+
+    command = flags_target.get_rsync_cmd_args()
+    assert '--dry-run' not in command
+
+    command = flags_target.get_rsync_cmd_args(dry_run=True)
+    assert '--dry-run' in command
 
 
 def test_sync_target_attributes_iconv():

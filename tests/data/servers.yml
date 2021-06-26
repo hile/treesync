@@ -1,0 +1,16 @@
+servers:
+  server1:
+    rsync_path: /usr/local/bin/rsync
+    iconv: UTF-8-MAC,UTF-8
+  dummy-server:
+
+targets:
+  data:
+    source: /data
+    destination: server1:/backup/data
+  data-remote:
+    source: /data
+    destination: server2:/backup/data-remote
+  dummy:
+    source: /no-data
+    destination: dummy-server:/dump
