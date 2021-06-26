@@ -71,10 +71,10 @@ class TargetConfiguration(ConfigurationSection):
         flags = []
         settings = self.destination_server_settings
         if settings is not None:
-            iconv = getattr(settings, 'iconv', None)
+            iconv = settings.get('iconv', None)
             if iconv is not None:
                 flags.append(f'--iconv={iconv}')
-            rsync_path = getattr(settings, 'rsync_path', None)
+            rsync_path = settings.get('rsync_path', None)
             if rsync_path is not None:
                 flags.append(f'--rsync-path={rsync_path}')
         return flags
@@ -83,8 +83,35 @@ class TargetConfiguration(ConfigurationSection):
 class ServerSettings(ConfigurationSection):
     """
     Server specific common sync settings by server name
+
+    Since server names can contain letters that are not valid python identifiers
+    this category is handled as special case unlike normal ConfigurationSection
     """
     __name__ = 'servers'
+
+    def __getattribute__(self, attr):
+        """
+        Return server by name
+        """
+        try:
+            settings = super().__getattribute__('__server_settings__')
+            if attr in settings:
+                return settings[attr]
+        except AttributeError:
+            pass
+        return super().__getattribute__(attr)
+
+    def __load_dictionary__(self, data):
+        """
+        Load server flag data from dictionary. Keys in dictionary are not required
+        to be valid python identifiers
+        """
+        self.__server_settings__ = {}
+        for server, settings in data.items():
+            # Ensure [] and None are cast to empty settings
+            if not settings:
+                settings = {}
+            self.__server_settings__[server] = settings
 
 
 class TargetSettings(ConfigurationSection):

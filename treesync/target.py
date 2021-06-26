@@ -164,51 +164,6 @@ class Target:
             args.append('--dry-run')
         return args
 
-    def format_local_paths(self):
-        """
-        Get list of local paths in source directory
-        """
-        prune_filters = list(itertools.chain(
-            *[('-name', name, '-o') for name in MACOS_META_EXCLUDES[:-1]] +
-            [('-name', MACOS_META_EXCLUDES[-1])]
-        ))
-        args = \
-            ['find', str(self.source).replace(' ', r'\ ')] + \
-            ['('] + \
-            prune_filters + \
-            [')', '-prune'] + \
-            ['-o', '-depth', '1']
-        stdout, _stderr = run_command_lineoutput(*args)
-        stdout.sort()
-        return stdout
-
-    def format_remote_paths(self):
-        """
-        Format list of remote paths
-        """
-        try:
-            host, path = str(self.destination).split(':', 1)
-        except IndexError:
-            path = str(self.destination)
-            host = None
-
-        prune_filters = list(itertools.chain(
-            *[('-name', name, '-o') for name in MACOS_META_EXCLUDES[:-1]] +
-            [('-name', MACOS_META_EXCLUDES[-1])]
-        ))
-        args = \
-            ['ssh', host] + \
-            ['find', path.replace(' ', r'\ ')] + \
-            [r'\('] + \
-            prune_filters + \
-            [r'\)', '-prune'] + \
-            ['-o', '-depth', '1']
-        stdout, _stderr = run_command_lineoutput(*args)
-        stdout.sort()
-        if host:
-            stdout = [f'{host}:{pattern}' for pattern in stdout]
-        return stdout
-
     def get_pull_command_args(self, dry_run=False):
         """
         Return 'pull' command arguments
