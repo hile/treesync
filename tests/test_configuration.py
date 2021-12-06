@@ -127,22 +127,27 @@ def test_sync_configuration_remote_servers():
     """
     expected_target_count = 3
     config = Configuration(SERVER_FLAGS_CONFIG)
+    # pylint: disable=no-member
     assert len(config.targets.names) == expected_target_count
 
     # Check the __iter__ method as side effect
+    # pylint: disable=no-member
     targets = list(config.targets)
     assert len(targets) == expected_target_count
 
+    # pylint: disable=no-member
     no_flags_target = config.targets.get_target('data-remote')
     assert no_flags_target.settings.destination_server_settings is None
     assert no_flags_target.settings.destination_server_flags == []
 
     # Server with empty (but defined) configuration section settings
+    # pylint: disable=no-member
     dummy_target = config.targets.get_target('dummy')
     assert dummy_target.settings.destination_server_settings == {}
     assert dummy_target.settings.destination_server_flags == []
 
     # Server with iconv and rsync path flags
+    # pylint: disable=no-member
     flags_target = config.targets.get_target('data')
     assert flags_target.settings.destination_server_settings is not None
     expected_flags = [

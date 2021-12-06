@@ -2,7 +2,6 @@
 Tree sync target
 """
 
-import itertools
 import os
 import pathlib
 import sys
@@ -10,16 +9,9 @@ import sys
 from tempfile import NamedTemporaryFile
 from subprocess import run, CalledProcessError
 
-from cli_toolkit.process import run_command_lineoutput
-from cli_toolkit.textfile import LineTextFile
+from sys_toolkit.textfile import LineTextFile
 
-from .constants import MACOS_META_EXCLUDES
-
-
-class SyncError(Exception):
-    """
-    Exceptions caused by rsync commands
-    """
+from .exceptions import SyncError
 
 
 class ExcludesFile(pathlib.Path):
@@ -47,6 +39,7 @@ class TemporaryExcludesFile:
     """
     def __init__(self, target):
         self.target = target
+        # pylint: disable=consider-using-with
         self.__tempfile__ = NamedTemporaryFile(
             mode='w',
             prefix=f'treesync-{self.target.name}'

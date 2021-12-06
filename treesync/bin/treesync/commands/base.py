@@ -31,7 +31,7 @@ class TreesyncCommand(Command):
         )
         return parser
 
-    def parse_args(self, args):
+    def parse_args(self, args=None, namespace=None):
         self.config = Configuration(args.config)
         return args
 

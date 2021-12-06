@@ -21,7 +21,7 @@ def create_test_config(path, name, source, destination, **kwargs):
     data = yaml.safe_dump({
         'targets': data
     })
-    with open(path, 'w') as filedescriptor:
+    with open(path, 'w', encoding='utf-8') as filedescriptor:
         filedescriptor.write(f'{data}\n')
 
 
