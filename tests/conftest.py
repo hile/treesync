@@ -3,11 +3,13 @@ Pytest configuration for all tests
 """
 
 import os
-import pathlib
+from pathlib import Path
 
 import pytest
 
 from treesync.constants import DEFAULT_CONFIGURATION_PATHS
+
+TEST_DATA = Path(__file__).parent.joinpath('data')
 
 
 @pytest.fixture(autouse=True)
@@ -37,8 +39,8 @@ def mock_no_user__sync_config():
     # pylint: disable=import-outside-toplevel
     from _pytest.monkeypatch import MonkeyPatch
     monkeypatch = MonkeyPatch()
-    monkeypatch.setattr(pathlib.Path, 'exists', exists)
-    monkeypatch.setattr(pathlib.Path, 'is_file', is_file)
+    monkeypatch.setattr(Path, 'exists', exists)
+    monkeypatch.setattr(Path, 'is_file', is_file)
 
     yield monkeypatch
     monkeypatch.undo()

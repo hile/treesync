@@ -15,7 +15,7 @@ from treesync.constants import (
 )
 from treesync.target import ExcludesFile, Target, SyncError
 
-from . import TEST_DATA
+from .conftest import TEST_DATA
 from .utils import create_source_directory
 
 EXCLUDES_FILE = TEST_DATA.joinpath('rsync.exclude')

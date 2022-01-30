@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "treesync"
+version = "1.2.0"
+description = "Utilitiies to use rsync for whole trees"
+authors = ["Ilkka Tuohela <hile@iki.fi>"]
+license = "PSF"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+pathlib-tree = "^2.1"
+
+[tool.poetry.dev-dependencies]
+coverage = "6.1.2"
+flake8 = "4.0.1"
+flake8-bugbear = "21.9.2"
+flake8-quotes = "3.3.1"
+pycodestyle = "2.8.0"
+pyflakes = "2.4.0"
+pylint = "2.11.1"
+pytest = "6.2.5"
+tox = "3.24.4"
+
+[tool.poetry.scripts]
+treesync = "treesync.bin.treesync.main:main"
+
+[build-system]
+#requires = ["poetry-core"]
+requires = ["poetry-core @ git+https://github.com/python-poetry/poetry-core.git@master"]
+build-backend = "poetry.core.masonry.api"

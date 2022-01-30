@@ -2,10 +2,8 @@
 Configuration for 'treesync' CLI application
 """
 
-from cli_toolkit.configuration import (
-    ConfigurationSection,
-    YamlConfiguration
-)
+from sys_toolkit.configuration.base import ConfigurationSection
+from sys_toolkit.configuration.yaml import YamlConfiguration
 
 from pathlib_tree.tree import SKIPPED_PATHS
 from .constants import (
