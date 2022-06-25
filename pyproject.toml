@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "treesync"
-version = "1.2.1"
+version = "1.2.3"
 description = "Utilitiies to use rsync for whole trees"
 authors = ["Ilkka Tuohela <hile@iki.fi>"]
 license = "PSF"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pathlib-tree = "^2.1"
+pathlib-tree = "^2.1.6"
 
 [tool.poetry.dev-dependencies]
 coverage = "^6.1"
@@ -24,6 +24,5 @@ tox = "^3"
 treesync = "treesync.bin.treesync.main:main"
 
 [build-system]
-# requires = ["poetry-core"]
-requires = ["poetry-core @ git+https://github.com/python-poetry/poetry-core.git@master"]
+requires = ["poetry-core>=1.0.8"]
 build-backend = "poetry.core.masonry.api"
