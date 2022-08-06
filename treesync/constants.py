@@ -36,6 +36,5 @@ DEFAULT_FLAGS = [
     '--verbose',
 ]
 
-
 #: Tree specific automatically loaded configuration file in source tree
 TREE_CONFIG_FILE = '.treesync.yml'
