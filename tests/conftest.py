@@ -14,6 +14,13 @@ TEST_DATA = Path(__file__).parent.joinpath('mock')
 EXCLUDES_FILE = TEST_DATA.joinpath('rsync.exclude')
 EXCLUDES_CONFIG = TEST_DATA.joinpath('excludes.yml')
 
+# Configuration file with hosts and sources
+HOST_SOURCES_CONFIG = TEST_DATA.joinpath('host_sources.yml')
+
+# These constants match data in HOST_SOURCES_CONFIG file
+EXPECTED_HOSTS_COUNT = 3
+EXPECTED_SOURCES_COUNT = 2
+
 # test configuration files for old configuration sections
 OLD_FORMAT_ICONV_CONFIG = TEST_DATA.joinpath('old_format_iconv_flags.yml')
 OLD_FORMAT_MINIMAL_CONFIG = TEST_DATA.joinpath('old_format_minimal.yml')

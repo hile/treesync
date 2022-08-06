@@ -12,6 +12,9 @@ class TargetConfiguration(ConfigurationSection):
     """
     Loader for named targets in TargetSettings
     """
+    source = ''
+    destination = ''
+
     __default_settings__ = {
         'ignore_default_flags': False,
         'ignore_default_excludes': False,
@@ -31,12 +34,10 @@ class TargetConfiguration(ConfigurationSection):
         Return settings for destination server
         """
         try:
-            # pylint: disable=no-member
             host, _path = str(self.destination).split(':', 1)
         except ValueError:
             return None
-        # pylint: disable=no-member
-        return getattr(self.__config_root__.servers, host, None)
+        return getattr(self.__config_root__.servers, host, None)  # pylint:disable=no-member
 
     @property
     def destination_server_flags(self):
@@ -58,7 +59,7 @@ class TargetConfiguration(ConfigurationSection):
         return flags
 
 
-class TargetSettings(ConfigurationSection):
+class TargetsConfigurationSection(ConfigurationSection):
     """
     Tree sync targets by name
     """

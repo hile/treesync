@@ -4,7 +4,7 @@ Settings for as server in treesync configuration
 from sys_toolkit.configuration.base import ConfigurationSection
 
 
-class ServerSettings(ConfigurationSection):
+class ServersConfigurationSection(ConfigurationSection):
     """
     Server specific common sync settings by server name
 

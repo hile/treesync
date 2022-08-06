@@ -1,6 +1,7 @@
 """
 Configuration loader for treesync
 """
+from typing import Optional
 
 from sys_toolkit.configuration.yaml import YamlConfiguration
 
@@ -8,22 +9,28 @@ from ..constants import DEFAULT_CONFIGURATION_PATHS
 
 from .defaults import Defaults
 from .hosts import HostsSettings
-from .servers import ServerSettings
-from .sources import SourcesSettings
-from .targets import TargetSettings
+from .servers import ServersConfigurationSection
+from .sources import SourcesConfigurationSection
+from .targets import TargetsConfigurationSection
 
 
 class Configuration(YamlConfiguration):
     """
     Yaml configuration file for 'treesync' CLI
     """
+    defaults: Optional[Defaults] = None
+    hosts: Optional[HostsSettings] = None
+    servers: Optional[ServersConfigurationSection] = None
+    sources: Optional[SourcesConfigurationSection] = None
+    targets: Optional[TargetsConfigurationSection] = None
+
     __default_paths__ = DEFAULT_CONFIGURATION_PATHS
     __section_loaders__ = (
         Defaults,
         HostsSettings,
-        ServerSettings,
-        SourcesSettings,
-        TargetSettings,
+        ServersConfigurationSection,
+        SourcesConfigurationSection,
+        TargetsConfigurationSection,
     )
 
     def __repr__(self):

@@ -2,6 +2,8 @@ servers:
   server1:
     rsync_path: /usr/local/bin/rsync
     iconv: UTF-8-MAC,UTF-8
+    flags:
+      - --usermap=demo:dummy
   dummy-server:
 targets:
   data:

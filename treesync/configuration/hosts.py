@@ -34,7 +34,7 @@ class HostTarget(ConfigurationSection):
         """
         Return sources configuration section
         """
-        return self.__config_root__.sources  # pylint: disable=no-member
+        return self.__config_root__.sources  # pylint:disable=no-member
 
 
 class HostTargetList(ConfigurationList):
@@ -56,13 +56,14 @@ class HostTargetList(ConfigurationList):
         """
         Return sources configuration section
         """
-        return self.__config_root__.sources  # pylint: disable=no-member
+        return self.__config_root__.sources  # pylint:disable=no-member
 
 
 class HostConfiguration(ConfigurationSection):
     """
     Configuration for a single host
     """
+    targets: Optional[HostTargetList] = None
     name = None
     __section_loaders__ = (
         HostTargetList,
@@ -84,7 +85,7 @@ class HostConfiguration(ConfigurationSection):
         """
         Return host settings from old servers config section
         """
-        config = self.__config_root__.servers  # pylint: disable=no-member
+        config = self.__config_root__.servers  # pylint:disable=no-member
         return getattr(config, self.name, None)
 
     @property
@@ -92,7 +93,7 @@ class HostConfiguration(ConfigurationSection):
         """
         Return sources configuration section
         """
-        return self.__config_root__.sources  # pylint: disable=no-member
+        return self.__config_root__.sources  # pylint:disable=no-member
 
 
 class HostsSettings(ConfigurationList):
@@ -111,4 +112,13 @@ class HostsSettings(ConfigurationList):
         """
         Return sources configuration section
         """
-        return self.__config_root__.sources  # pylint: disable=no-member
+        return self.__config_root__.sources  # pylint:disable=no-member
+
+    def get(self, name: str) -> Optional[HostConfiguration]:
+        """
+        Get specified host by name
+        """
+        for host in self:
+            if host.name == name:
+                return host
+        return None

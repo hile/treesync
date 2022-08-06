@@ -20,7 +20,7 @@ class SourceConfiguration(ConfigurationSection):
         return f'{self.name} {self.path}' if self.name and self.path else ''
 
 
-class SourcesSettings(ConfigurationList):
+class SourcesConfigurationSection(ConfigurationList):
     """
     Configuration for sync sources
     """

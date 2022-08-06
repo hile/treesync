@@ -1,0 +1,28 @@
+#
+# Minimal treesync configuration file example for 'new format' remote sync configuration
+# with sources and hosts sections
+#
+---
+hosts:
+  - name: server1
+    rsync_path: /usr/local/bin/rsync
+    iconv: UTF-8-MAC,UTF-8
+    targets:
+      - source: data
+        destination: server1:/backup/data
+  - name: server2
+    targets:
+      - source: data
+        destination: server2:/backup/data-remote
+  - name: dummy-server
+    flags:
+      - --usermap=demo:dummy
+      - --groupmap=demogroup:dummies
+    targets:
+      - source: dummy
+        destination: dummy-server:/dump
+sources:
+  - name: data
+    path: /data
+  - name: dummy
+    path: /no-data

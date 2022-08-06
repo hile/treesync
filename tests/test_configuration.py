@@ -8,6 +8,8 @@ import shutil
 import pytest
 
 from pathlib_tree.tree import Tree, SKIPPED_PATHS
+from treesync.configuration.hosts import HostConfiguration, HostTargetList, HostTarget
+from treesync.configuration.sources import SourcesConfigurationSection, SourceConfiguration
 from treesync.configuration import Configuration
 from treesync.constants import (
     DEFAULT_EXCLUDES,
@@ -18,14 +20,55 @@ from treesync.target import ExcludesFile, Target, SyncError
 from .conftest import (
     EXCLUDES_FILE,
     EXCLUDES_CONFIG,
+    EXPECTED_HOSTS_COUNT,
+    EXPECTED_SOURCES_COUNT,
+    HOST_SOURCES_CONFIG,
     OLD_FORMAT_ICONV_CONFIG,
     OLD_FORMAT_MINIMAL_CONFIG,
     OLD_FORMAT_SERVER_FLAGS_CONFIG,
 )
 from .utils import create_source_directory
 
+VALID_HOST_NAME = 'server1'
+INVALID_HOST_NAME = 'no-such-host'
 
-def test_sync_configuration_empty():
+
+def validate_host_target(target: HostTarget) -> None:
+    """
+    Validate attributes of a host target object
+    """
+    assert isinstance(target, HostTarget)
+    assert isinstance(target.__repr__(), str)
+    assert isinstance(target.host_config, HostConfiguration)
+    assert isinstance(target.sources_config, SourcesConfigurationSection)
+
+
+def validate_host_configuration(host: HostConfiguration) -> None:
+    """
+    Validate attributes of a host configuration item
+    """
+    assert isinstance(host, HostConfiguration)
+    assert isinstance(host.sources_config, SourcesConfigurationSection)
+
+    assert isinstance(host.__repr__(), str)
+
+    assert isinstance(host.targets, HostTargetList)
+    assert isinstance(host.targets.host_config, HostConfiguration)
+    assert isinstance(host.targets.sources_config, SourcesConfigurationSection)
+    assert isinstance(host.targets.__repr__(), str)
+    for target in host.targets:
+        validate_host_target(target)
+
+
+def validate_source_configuration(source: SourceConfiguration) -> None:
+    """
+    Validate attributes of a source configuration item
+    """
+    assert isinstance(source, SourceConfiguration)
+    assert isinstance(source.__repr__(), str)
+
+
+def test_configuration_empty() -> None:
     """
     Test loading empty sync configuration
     """
@@ -33,7 +76,6 @@ def test_sync_configuration_empty():
 
     assert isinstance(config.__repr__(), str)
 
-    # pylint: disable=no-member
     assert config.defaults is not None
 
     # Ensure system / user paths are mocked out
@@ -41,18 +83,45 @@ def test_sync_configuration_empty():
         assert not path.exists()
         assert not path.is_file()
 
-    # pylint: disable=no-member
     sync_targets = config.sync_targets
     assert len(sync_targets) == 0
 
 
-def test_sync_configuration_old_format_minimal():
+def test_configuration_hosts_properties() -> None:
+    """
+    Test properties of loaded minimal configuration file with hosts and sources sections
+    """
+    config = Configuration(HOST_SOURCES_CONFIG)
+    assert isinstance(config.hosts.sources_config, SourcesConfigurationSection)
+
+    assert len(config.hosts) == EXPECTED_HOSTS_COUNT
+    assert config.hosts.get(INVALID_HOST_NAME) is None
+
+    host = config.hosts.get(VALID_HOST_NAME)
+    validate_host_configuration(host)
+    assert host.server_config is None
+
+    for host in config.hosts:  # pylint: disable=not-an-iterable
+        validate_host_configuration(host)
+
+
+def test_configuration_sources_properties() -> None:
+    """
+    Test properties of loaded minimal configuration file with hosts and sources sections
+    """
+    config = Configuration(HOST_SOURCES_CONFIG)
+    assert len(config.sources) == EXPECTED_SOURCES_COUNT
+
+    for source in config.sources:  # pylint: disable=not-an-iterable
+        validate_source_configuration(source)
+
+
+def test_configuration_old_format_minimal() -> None:
     """
     Tesst loading minimal old format test configuration
     """
     config = Configuration(OLD_FORMAT_MINIMAL_CONFIG)
 
-    # pylint: disable=no-member
     sync_targets = config.sync_targets
     assert len(sync_targets) == 1
 
@@ -60,7 +129,7 @@ def test_sync_configuration_old_format_minimal():
     assert target.tree_excludes_file is None
 
 
-def test_sync_configuration_old_format_target_attributes_minimal():
+def test_configuration_old_format_target_attributes_minimal() -> None:
     """
     Test basic attributes of minimal sync target
     """
@@ -71,7 +140,6 @@ def test_sync_configuration_old_format_target_attributes_minimal():
 
     target = config.get_target('minimal')
     assert isinstance(target, Target)
-    # pylint: disable=no-member
     assert target.default_settings == config.defaults
 
     assert target.__repr__() == target.name
@@ -93,14 +161,13 @@ def test_sync_configuration_old_format_target_attributes_minimal():
     assert isinstance(target.source, pathlib.Path)
     assert isinstance(target.destination, str)
 
-    # pylint: disable=no-member
     assert config.defaults.rsync_command in target.get_rsync_cmd_args()
     target_args = target.get_rsync_cmd_args()
     for flag in target.flags:
         assert flag in target_args
 
 
-def test_sync_configuration_old_format_target_attributes_excluded():
+def test_configuration_old_format_target_attributes_excluded() -> None:
     """
     Test loading target with excluded attributes
     """
@@ -121,36 +188,32 @@ def test_sync_configuration_old_format_target_attributes_excluded():
         target.flags
 
 
-def test_sync_configuration_old_format_remote_server_config():
+def test_configuration_old_format_remote_server_config() -> None:
     """
     Test loading configuration with multiple servers and server specific flags
     """
     expected_target_count = 3
     config = Configuration(OLD_FORMAT_SERVER_FLAGS_CONFIG)
-    # pylint: disable=no-member
     assert len(config.targets.names) == expected_target_count
 
     # Check the __iter__ method as side effect
-    # pylint: disable=no-member
     targets = list(config.targets)
     assert len(targets) == expected_target_count
 
-    # pylint: disable=no-member
     no_flags_target = config.targets.get_target('data-remote')
     assert no_flags_target.settings.destination_server_settings is None
     assert no_flags_target.settings.destination_server_flags == []
 
     # Server with empty (but defined) configuration section settings
-    # pylint: disable=no-member
     dummy_target = config.targets.get_target('dummy')
     assert dummy_target.settings.destination_server_settings == {}
     assert dummy_target.settings.destination_server_flags == []
 
     # Server with iconv and rsync path flags
-    # pylint: disable=no-member
     flags_target = config.targets.get_target('data')
     assert flags_target.settings.destination_server_settings is not None
     expected_flags = [
+        '--usermap=demo:dummy',
         '--iconv=UTF-8-MAC,UTF-8',
         '--rsync-path=/usr/local/bin/rsync'
     ]
@@ -168,7 +231,7 @@ def test_sync_configuration_old_format_remote_server_config():
     assert '--dry-run' in command
 
 
-def test_sync_configuration_old_format_sync_target_attributes_iconv():
+def test_configuration_old_format_sync_target_attributes_iconv() -> None:
     """
     Test loading target with excluded attributes
     """
@@ -183,7 +246,7 @@ def test_sync_configuration_old_format_sync_target_attributes_iconv():
     assert expected_flag in target.flags
 
 
-def test_sync_configuration_old_format_sync_target_tmpdir(tmpdir):
+def test_configuration_old_format_sync_target_tmpdir(tmpdir) -> None:
     """
     Test loading target for temporary directory
     """
