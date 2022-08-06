@@ -3,7 +3,6 @@ servers:
     rsync_path: /usr/local/bin/rsync
     iconv: UTF-8-MAC,UTF-8
   dummy-server:
-
 targets:
   data:
     source: /data

@@ -15,14 +15,14 @@ from treesync.constants import (
 )
 from treesync.target import ExcludesFile, Target, SyncError
 
-from .conftest import TEST_DATA
+from .conftest import (
+    EXCLUDES_FILE,
+    EXCLUDES_CONFIG,
+    OLD_FORMAT_ICONV_CONFIG,
+    OLD_FORMAT_MINIMAL_CONFIG,
+    OLD_FORMAT_SERVER_FLAGS_CONFIG,
+)
 from .utils import create_source_directory
-
-EXCLUDES_FILE = TEST_DATA.joinpath('rsync.exclude')
-EXCLUDES_CONFIG = TEST_DATA.joinpath('excludes.yml')
-ICONV_CONFIG = TEST_DATA.joinpath('iconv.yml')
-MINIMAL_CONFIG = TEST_DATA.joinpath('minimal.yml')
-SERVER_FLAGS_CONFIG = TEST_DATA.joinpath('servers.yml')
 
 
 def test_sync_configuration_empty():
@@ -46,11 +46,11 @@ def test_sync_configuration_empty():
     assert len(sync_targets) == 0
 
 
-def test_sync_configuration_minimal():
+def test_sync_configuration_old_format_minimal():
     """
-    Tesst loading minimal.yml test configuration
+    Tesst loading minimal old format test configuration
     """
-    config = Configuration(MINIMAL_CONFIG)
+    config = Configuration(OLD_FORMAT_MINIMAL_CONFIG)
 
     # pylint: disable=no-member
     sync_targets = config.sync_targets
@@ -60,11 +60,11 @@ def test_sync_configuration_minimal():
     assert target.tree_excludes_file is None
 
 
-def test_sync_target_attributes_minimal():
+def test_sync_configuration_old_format_target_attributes_minimal():
     """
     Test basic attributes of minimal sync target
     """
-    config = Configuration(MINIMAL_CONFIG)
+    config = Configuration(OLD_FORMAT_MINIMAL_CONFIG)
 
     with pytest.raises(ValueError):
         config.get_target('default')
@@ -100,7 +100,7 @@ def test_sync_target_attributes_minimal():
         assert flag in target_args
 
 
-def test_sync_target_attributes_excluded():
+def test_sync_configuration_old_format_target_attributes_excluded():
     """
     Test loading target with excluded attributes
     """
@@ -121,12 +121,12 @@ def test_sync_target_attributes_excluded():
         target.flags
 
 
-def test_sync_configuration_remote_servers():
+def test_sync_configuration_old_format_remote_server_config():
     """
     Test loading configuration with multiple servers and server specific flags
     """
     expected_target_count = 3
-    config = Configuration(SERVER_FLAGS_CONFIG)
+    config = Configuration(OLD_FORMAT_SERVER_FLAGS_CONFIG)
     # pylint: disable=no-member
     assert len(config.targets.names) == expected_target_count
 
@@ -168,11 +168,11 @@ def test_sync_configuration_remote_servers():
     assert '--dry-run' in command
 
 
-def test_sync_target_attributes_iconv():
+def test_sync_configuration_old_format_sync_target_attributes_iconv():
     """
     Test loading target with excluded attributes
     """
-    config = Configuration(ICONV_CONFIG)
+    config = Configuration(OLD_FORMAT_ICONV_CONFIG)
     target = config.get_target('converted')
 
     assert target.settings.ignore_default_excludes is False
@@ -183,7 +183,7 @@ def test_sync_target_attributes_iconv():
     assert expected_flag in target.flags
 
 
-def test_sync_target_tmpdir(tmpdir):
+def test_sync_configuration_old_format_sync_target_tmpdir(tmpdir):
     """
     Test loading target for temporary directory
     """

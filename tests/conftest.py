@@ -9,7 +9,15 @@ import pytest
 
 from treesync.constants import DEFAULT_CONFIGURATION_PATHS
 
-TEST_DATA = Path(__file__).parent.joinpath('data')
+TEST_DATA = Path(__file__).parent.joinpath('mock')
+
+EXCLUDES_FILE = TEST_DATA.joinpath('rsync.exclude')
+EXCLUDES_CONFIG = TEST_DATA.joinpath('excludes.yml')
+
+# test configuration files for old configuration sections
+OLD_FORMAT_ICONV_CONFIG = TEST_DATA.joinpath('old_format_iconv_flags.yml')
+OLD_FORMAT_MINIMAL_CONFIG = TEST_DATA.joinpath('old_format_minimal.yml')
+OLD_FORMAT_SERVER_FLAGS_CONFIG = TEST_DATA.joinpath('old_format_servers.yml')
 
 
 @pytest.fixture(autouse=True)
