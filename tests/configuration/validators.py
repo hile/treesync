@@ -3,8 +3,13 @@ Object validation utility functions
 """
 from pathlib import Path
 
+import pytest
+
 from treesync.configuration.hosts import HostConfiguration, HostTargetList, HostTargetConfiguration
 from treesync.configuration.sources import SourcesConfigurationSection, SourceConfiguration
+from treesync.exceptions import ConfigurationError
+
+from ..conftest import MISSING_SOURCE_NAME
 
 
 def validate_target_configuration(target: HostTargetConfiguration) -> None:
@@ -15,6 +20,16 @@ def validate_target_configuration(target: HostTargetConfiguration) -> None:
     assert isinstance(target.__repr__(), str)
     assert isinstance(target.__host_config__, HostConfiguration)
     assert isinstance(target.__sources_config__, SourcesConfigurationSection)
+
+    assert isinstance(target.hostname, str)
+    if target.source == MISSING_SOURCE_NAME:
+        # Both of these refer to source configuration that is missing
+        for attr in ('name', 'source_path'):
+            with pytest.raises(ConfigurationError):
+                getattr(target, attr)
+    else:
+        assert isinstance(target.name, str)
+        assert isinstance(target.source_path, Path)
 
 
 def validate_host_configuration(host: HostConfiguration) -> None:

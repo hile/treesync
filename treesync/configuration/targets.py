@@ -38,15 +38,22 @@ class TargetConfiguration(ConfigurationSection):
         return f'{self.source} {self.destination}'
 
     @property
+    def hostname(self):
+        """
+        Get hostname from target name (with host:target syntax)
+        """
+        host, _path = str(self.destination).split(':', 1)
+        return host
+
+    @property
     def destination_server_settings(self):
         """
         Return settings for destination server
         """
         try:
-            host, _path = str(self.destination).split(':', 1)
+            return getattr(self.__config_root__.servers, self.hostname, None)  # pylint:disable=no-member
         except ValueError:
             return None
-        return getattr(self.__config_root__.servers, host, None)  # pylint:disable=no-member
 
     @property
     def destination_server_flags(self):

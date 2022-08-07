@@ -21,6 +21,7 @@ from ..conftest import (
     EXCLUDES_CONFIG,
     EXPECTED_HOSTS_COUNT,
     EXPECTED_SOURCES_COUNT,
+    EXPECTED_SYNC_TARGET_COUNT,
     HOST_SOURCES_CONFIG,
     OLD_FORMAT_ICONV_CONFIG,
     OLD_FORMAT_MINIMAL_CONFIG,
@@ -247,3 +248,13 @@ def test_configuration_old_format_sync_target_tmpdir(tmpdir) -> None:
     with pytest.raises(SyncError):
         target.push()
     target.pull()
+
+
+# pylint: disable=unused-argument
+def test_host_configuration_sync_targets(mock_config_host_sources):
+    """
+    Test loading a host via configuration and listing
+    """
+    config = Configuration()
+    host = config.hosts.get(VALID_HOST_NAME)
+    assert len(host.sync_targets) == EXPECTED_SYNC_TARGET_COUNT

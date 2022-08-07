@@ -5,10 +5,11 @@ from typing import List, Optional
 
 from sys_toolkit.configuration.base import ConfigurationSection, ConfigurationList
 
+from ..exceptions import ConfigurationError
 from ..host import Hosts
 
 from .defaults import HOST_CONFIGURATION_DEFAULTS
-from .targets import TargetConfiguration
+from .targets import Target, TargetConfiguration
 
 
 class HostTargetConfiguration(TargetConfiguration):
@@ -31,6 +32,37 @@ class HostTargetConfiguration(TargetConfiguration):
         Return sources configuration section
         """
         return self.__config_root__.sources  # pylint:disable=no-member
+
+    @property
+    def hostname(self):
+        """
+        Name of host
+        """
+        return self.__host_config__.name
+
+    @property
+    def name(self):
+        """
+        Look up source name for this host target
+        """
+        source_config = self.__sources_config__.get_source_config(self.source)
+        if not source_config:
+            raise ConfigurationError(
+                f'host {self.hostname} target {self} source does is not defined: {self.source}'
+            )
+        return f'{self.hostname}:{source_config.name}'
+
+    @property
+    def source_path(self):
+        """
+        Look up source path for this host target
+        """
+        source_config = self.__sources_config__.get_source_config(self.source)
+        if not source_config:
+            raise ConfigurationError(
+                f'host {self.hostname} target {self} source does is not defined: {self.source}'
+            )
+        return source_config.path
 
 
 class HostTargetList(ConfigurationList):
@@ -90,6 +122,23 @@ class HostConfiguration(ConfigurationSection):
         Return sources configuration section
         """
         return self.__config_root__.sources  # pylint:disable=no-member
+
+    @property
+    def sync_targets(self):
+        """
+        Return sync targets for host
+        """
+        targets = []
+        for target_config in self.targets:
+            targets.append(
+                Target(
+                    target_config.name,
+                    target_config.source_path,
+                    target_config.destination,
+                    target_config
+                )
+            )
+        return targets
 
 
 class HostsSettings(ConfigurationList):

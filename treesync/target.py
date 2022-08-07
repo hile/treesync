@@ -75,7 +75,7 @@ class Target:
         """
         Configuration section for target settings
         """
-        return self.settings.__parent__.__parent__.defaults
+        return self.settings.__config_root__.defaults
 
     @property
     def excluded(self):

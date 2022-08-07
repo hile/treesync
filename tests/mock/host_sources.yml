@@ -10,6 +10,8 @@ hosts:
     targets:
       - source: data
         destination: server1:/backup/data
+      - source: dummy
+        destination: server1:/dummies
   - name: server2
     targets:
       - source: data
@@ -21,6 +23,8 @@ hosts:
     targets:
       - source: dummy
         destination: dummy-server:/dump
+      - source: no-such-source
+        destination: dummy-server:/all
 sources:
   - name: data
     path: /data

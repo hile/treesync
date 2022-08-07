@@ -17,11 +17,17 @@ EXCLUDES_CONFIG = TEST_DATA.joinpath('excludes.yml')
 # Configuration file with hosts and sources
 HOST_SOURCES_CONFIG = TEST_DATA.joinpath('host_sources.yml')
 
-SERVERS_TARGET_NAME = 'dummy'
+DUMMY_TARGET_NAME = 'dummy'
+
 VALID_TARGET_NAME = 'minimal'
+MISSING_SOURCE_NAME = 'no-such-source'
 INVALID_TARGET_NAME = 'no-such-target'
+
 VALID_HOST_NAME = 'server1'
 UNEXPECTED_HOST_NAME = 'no-such-host'
+
+# Expected count of sync targets for the VALID_HOST_NAME host
+EXPECTED_SYNC_TARGET_COUNT = 2
 
 # These constants match data in HOST_SOURCES_CONFIG file
 EXPECTED_HOSTS_COUNT = 3

@@ -5,7 +5,7 @@ Unit tests for 'treesync list' command
 from cli_toolkit.tests.script import validate_script_run_exception_with_args
 from treesync.bin.treesync.main import Treesync
 
-from ..conftest import SERVERS_TARGET_NAME
+from ..conftest import DUMMY_TARGET_NAME
 
 EXPECTED_OUTPUT_LINES_VALID_TARGET = 8
 EXPECTED_OUTPUT_LINES_ALL_TARGETS = 24
@@ -48,7 +48,7 @@ def test_cli_treesync_show_valid_target(mock_config_old_format_server_flags, cap
     Test running 'treesync show' with a single valid target name
     """
     script = Treesync()
-    testargs = ['treesync', 'show', SERVERS_TARGET_NAME]
+    testargs = ['treesync', 'show', DUMMY_TARGET_NAME]
     with monkeypatch.context() as context:
         validate_script_run_exception_with_args(script, context, testargs, exit_code=0)
 
