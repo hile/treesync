@@ -26,11 +26,10 @@ from .conftest import (
     OLD_FORMAT_ICONV_CONFIG,
     OLD_FORMAT_MINIMAL_CONFIG,
     OLD_FORMAT_SERVER_FLAGS_CONFIG,
+    UNEXPECTED_HOST_NAME,
+    VALID_HOST_NAME,
 )
 from .utils import create_source_directory
-
-VALID_HOST_NAME = 'server1'
-INVALID_HOST_NAME = 'no-such-host'
 
 
 def validate_host_target(target: HostTarget) -> None:
@@ -95,7 +94,7 @@ def test_configuration_hosts_properties() -> None:
     assert isinstance(config.hosts.sources_config, SourcesConfigurationSection)
 
     assert len(config.hosts) == EXPECTED_HOSTS_COUNT
-    assert config.hosts.get(INVALID_HOST_NAME) is None
+    assert config.hosts.get(UNEXPECTED_HOST_NAME) is None
 
     host = config.hosts.get(VALID_HOST_NAME)
     validate_host_configuration(host)

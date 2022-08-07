@@ -25,7 +25,7 @@ class Hosts(MutableMapping):
         self.__items__ = {}
 
     def __delitem__(self, name: str) -> None:
-        return self.__items__[name]
+        del self.__items__[name]
 
     def __getitem__(self, name: str) -> Optional[TargetHost]:
         return self.__items__[name]

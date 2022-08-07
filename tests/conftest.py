@@ -17,6 +17,9 @@ EXCLUDES_CONFIG = TEST_DATA.joinpath('excludes.yml')
 # Configuration file with hosts and sources
 HOST_SOURCES_CONFIG = TEST_DATA.joinpath('host_sources.yml')
 
+VALID_HOST_NAME = 'server1'
+UNEXPECTED_HOST_NAME = 'no-such-host'
+
 # These constants match data in HOST_SOURCES_CONFIG file
 EXPECTED_HOSTS_COUNT = 3
 EXPECTED_SOURCES_COUNT = 2
