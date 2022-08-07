@@ -4,12 +4,13 @@ Unit tests for 'treesync pull' command
 
 import sys
 
-from pathlib import Path
+from subprocess import CalledProcessError
+from pathlib_tree.tree import Tree
 
 import pytest
 
 from cli_toolkit.tests.script import validate_script_run_exception_with_args
-from pathlib_tree.tree import Tree
+from sys_toolkit.tests.mock import MockException
 
 from treesync.bin.treesync.main import Treesync
 
@@ -19,7 +20,8 @@ from ..utils import create_source_directory
 EXCLUDES_FILE = TEST_DATA.joinpath('rsync.exclude')
 
 
-def test_cli_treesync_pull_no_targets(monkeypatch):
+# pylint: disable=unused-argument
+def test_cli_treesync_pull_no_targets(mock_no_user_sync_config, monkeypatch):
     """
     Test running 'treesync pull' without targets
     """
@@ -29,7 +31,8 @@ def test_cli_treesync_pull_no_targets(monkeypatch):
         validate_script_run_exception_with_args(script, context, testargs, exit_code=1)
 
 
-def test_cli_treesync_pull_invalid_targets(monkeypatch):
+# pylint: disable=unused-argument
+def test_cli_treesync_pull_invalid_targets(mock_no_user_sync_config, monkeypatch):
     """
     Test running 'treesync push' with invalid targets
     """
@@ -39,7 +42,8 @@ def test_cli_treesync_pull_invalid_targets(monkeypatch):
         validate_script_run_exception_with_args(script, context, testargs, exit_code=1)
 
 
-def test_cli_push_pull_tmpdir(tmpdir, monkeypatch):
+# pylint: disable=unused-argument
+def test_cli_push_pull_tmpdir(mock_no_user_sync_config, tmpdir, monkeypatch):
     """
     Test pull and push with tmpdir
     """
@@ -57,7 +61,7 @@ def test_cli_push_pull_tmpdir(tmpdir, monkeypatch):
         with pytest.raises(SystemExit) as exit_status:
             script.run()
         assert exit_status.value.code == 0
-    assert Path(destination).exists()
+    assert destination.exists()
 
     testargs = ['treesync', 'pull', '--config', str(config_file), 'test']
     with monkeypatch.context() as context:
@@ -65,3 +69,34 @@ def test_cli_push_pull_tmpdir(tmpdir, monkeypatch):
         with pytest.raises(SystemExit) as exit_status:
             script.run()
         assert exit_status.value.code == 0
+
+
+# pylint: disable=unused-argument
+def test_cli_push_pull_tmpdir_error(mock_no_user_sync_config, tmpdir, monkeypatch):
+    """
+    Test pull and push with tmpdir and errors in running the commands
+    """
+    mock_called_process_error = MockException(CalledProcessError, cmd='mock command', returncode=1)
+    monkeypatch.setattr('treesync.target.run', mock_called_process_error)
+    source, destination, config_file = create_source_directory(tmpdir, EXCLUDES_FILE)
+
+    assert source.exists()
+    assert not destination.exists()
+
+    Tree(destination.parent).create()
+    script = Treesync()
+
+    testargs = ['treesync', 'push', '--config', str(config_file), 'test']
+    with monkeypatch.context() as context:
+        context.setattr(sys, 'argv', testargs)
+        with pytest.raises(SystemExit) as exit_status:
+            script.run()
+        assert exit_status.value.code == 1
+    assert not destination.exists()
+
+    testargs = ['treesync', 'pull', '--config', str(config_file), 'test']
+    with monkeypatch.context() as context:
+        context.setattr(sys, 'argv', testargs)
+        with pytest.raises(SystemExit) as exit_status:
+            script.run()
+        assert exit_status.value.code == 1

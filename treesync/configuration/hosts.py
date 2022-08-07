@@ -8,19 +8,13 @@ from sys_toolkit.configuration.base import ConfigurationSection, ConfigurationLi
 from ..host import Hosts
 
 from .defaults import HOST_CONFIGURATION_DEFAULTS
+from .targets import TargetConfiguration
 
 
-class HostTarget(ConfigurationSection):
+class HostTargetConfiguration(TargetConfiguration):
     """
     Configuration section for a single host sync target
     """
-    source: str = ''
-    destination: str = ''
-    __required_settings__ = (
-        'source',
-        'destination',
-    )
-
     def __repr__(self):
         return self.source
 
@@ -44,7 +38,7 @@ class HostTargetList(ConfigurationList):
     List of host sync target configurations
     """
     __name__ = 'targets'
-    __dict_loader_class__ = HostTarget
+    __dict_loader_class__ = HostTargetConfiguration
 
     @property
     def host_config(self) -> 'HostConfiguration':

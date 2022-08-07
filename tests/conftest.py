@@ -17,6 +17,9 @@ EXCLUDES_CONFIG = TEST_DATA.joinpath('excludes.yml')
 # Configuration file with hosts and sources
 HOST_SOURCES_CONFIG = TEST_DATA.joinpath('host_sources.yml')
 
+SERVERS_TARGET_NAME = 'data'
+VALID_TARGET_NAME = 'minimal'
+INVALID_TARGET_NAME = 'no-such-target'
 VALID_HOST_NAME = 'server1'
 UNEXPECTED_HOST_NAME = 'no-such-host'
 
@@ -38,8 +41,8 @@ def common_fixtures(cli_mock_argv):
     print('mock CLI argv', cli_mock_argv)
 
 
-@pytest.fixture(scope='module', autouse=True)
-def mock_no_user__sync_config():
+@pytest.fixture
+def mock_no_user_sync_config():
     """
     Mock user configuration path
     """
@@ -62,3 +65,30 @@ def mock_no_user__sync_config():
 
     yield monkeypatch
     monkeypatch.undo()
+
+
+@pytest.fixture
+def mock_config_old_format_minimal(monkeypatch):
+    """
+    Mock a treesync setup using the OLD_FORMAT_MINIMAL_CONFIG configuration file
+    """
+    monkeypatch.setattr('treesync.configuration.loader.DEFAULT_CONFIGURATION_PATHS', [OLD_FORMAT_MINIMAL_CONFIG])
+    return OLD_FORMAT_MINIMAL_CONFIG
+
+
+@pytest.fixture
+def mock_config_old_format_server_flags(monkeypatch):
+    """
+    Mock a treesync setup using the OLD_FORMAT_SERVER_FLAGS_CONFIG configuration file
+    """
+    monkeypatch.setattr('treesync.configuration.loader.DEFAULT_CONFIGURATION_PATHS', [OLD_FORMAT_SERVER_FLAGS_CONFIG])
+    return OLD_FORMAT_SERVER_FLAGS_CONFIG
+
+
+@pytest.fixture
+def mock_config_host_sources(monkeypatch):
+    """
+    Mock a treesync setup using the HOST_SOURCES_CONFIG configuration file
+    """
+    monkeypatch.setattr('treesync.configuration.loader.DEFAULT_CONFIGURATION_PATHS', [HOST_SOURCES_CONFIG])
+    return HOST_SOURCES_CONFIG

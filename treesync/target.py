@@ -5,6 +5,7 @@ Tree sync target
 import os
 import pathlib
 import sys
+import typing
 
 from tempfile import NamedTemporaryFile
 from subprocess import run, CalledProcessError
@@ -12,6 +13,9 @@ from subprocess import run, CalledProcessError
 from sys_toolkit.textfile import LineTextFile
 
 from .exceptions import SyncError
+
+if typing.TYPE_CHECKING:  # pragma: no cover
+    from treesync.configuration.targets import TargetConfiguration
 
 
 class ExcludesFile(pathlib.Path):
@@ -40,10 +44,7 @@ class TemporaryExcludesFile:
     def __init__(self, target):
         self.target = target
         # pylint: disable=consider-using-with
-        self.__tempfile__ = NamedTemporaryFile(
-            mode='w',
-            prefix=f'treesync-{self.target.name}'
-        )
+        self.__tempfile__ = NamedTemporaryFile(mode='w', prefix=f'treesync-{self.target.name}')
         for line in self.target.excluded:
             self.__tempfile__.write(f'{line}\n')
         self.__tempfile__.flush()
@@ -59,9 +60,11 @@ class Target:
     """
     Tree sync target
     """
-    def __init__(self, name, settings):
+    def __init__(self, name, source: str, destination: str, settings: 'TargetConfiguration'):
         self.name = name
-        self.settings = settings
+        self.source = pathlib.Path(source)
+        self.destination = destination
+        self.settings = settings if settings else {}
         self.__excludes_file__ = None
 
     def __repr__(self):
@@ -133,20 +136,6 @@ class Target:
             flags.append(f'--iconv={self.settings.iconv}')
         flags.append(f'--exclude-from={self.excludes_file}')
         return flags
-
-    @property
-    def source(self):
-        """
-        Return pathlib.Path for source
-        """
-        return pathlib.Path(self.settings.source)
-
-    @property
-    def destination(self):
-        """
-        Return rsync destination
-        """
-        return self.settings.destination
 
     def get_rsync_cmd_args(self, dry_run=False):
         """

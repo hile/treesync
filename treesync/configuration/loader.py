@@ -24,7 +24,7 @@ class Configuration(YamlConfiguration):
     sources: Optional[SourcesConfigurationSection] = None
     targets: Optional[TargetsConfigurationSection] = None
 
-    __default_paths__ = DEFAULT_CONFIGURATION_PATHS
+    __default_paths__ = []
     __section_loaders__ = (
         Defaults,
         HostsSettings,
@@ -32,6 +32,10 @@ class Configuration(YamlConfiguration):
         SourcesConfigurationSection,
         TargetsConfigurationSection,
     )
+
+    def __init__(self, path=None, parent=None, debug_enabled=False, silent=False):
+        self.__default_paths__ = DEFAULT_CONFIGURATION_PATHS
+        super().__init__(path, parent, debug_enabled, silent)
 
     def __repr__(self):
         return 'treesync config'

@@ -8,7 +8,7 @@ import shutil
 import pytest
 
 from pathlib_tree.tree import Tree, SKIPPED_PATHS
-from treesync.configuration.hosts import HostConfiguration, HostTargetList, HostTarget
+from treesync.configuration.hosts import HostConfiguration, HostTargetList, HostTargetConfiguration
 from treesync.configuration.sources import SourcesConfigurationSection, SourceConfiguration
 from treesync.configuration import Configuration
 from treesync.constants import (
@@ -32,11 +32,11 @@ from .conftest import (
 from .utils import create_source_directory
 
 
-def validate_host_target(target: HostTarget) -> None:
+def validate_target_configuration(target: HostTargetConfiguration) -> None:
     """
-    Validate attributes of a host target object
+    Validate attributes of a target configuration object
     """
-    assert isinstance(target, HostTarget)
+    assert isinstance(target, HostTargetConfiguration)
     assert isinstance(target.__repr__(), str)
     assert isinstance(target.host_config, HostConfiguration)
     assert isinstance(target.sources_config, SourcesConfigurationSection)
@@ -56,7 +56,7 @@ def validate_host_configuration(host: HostConfiguration) -> None:
     assert isinstance(host.targets.sources_config, SourcesConfigurationSection)
     assert isinstance(host.targets.__repr__(), str)
     for target in host.targets:
-        validate_host_target(target)
+        validate_target_configuration(target)
 
 
 def validate_source_configuration(source: SourceConfiguration) -> None:
@@ -67,7 +67,8 @@ def validate_source_configuration(source: SourceConfiguration) -> None:
     assert isinstance(source.__repr__(), str)
 
 
-def test_configuration_empty() -> None:
+# pylint: disable=unused-argument
+def test_configuration_empty(mock_no_user_sync_config) -> None:
     """
     Test loading empty sync configuration
     """
@@ -115,7 +116,7 @@ def test_configuration_sources_properties() -> None:
         validate_source_configuration(source)
 
 
-def test_configuration_old_format_minimal() -> None:
+def test_configuration_old_format_minimal(mock_no_user_sync_config) -> None:
     """
     Tesst loading minimal old format test configuration
     """
@@ -128,7 +129,7 @@ def test_configuration_old_format_minimal() -> None:
     assert target.tree_excludes_file is None
 
 
-def test_configuration_old_format_target_attributes_minimal() -> None:
+def test_configuration_old_format_target_attributes_minimal(mock_no_user_sync_config) -> None:
     """
     Test basic attributes of minimal sync target
     """
@@ -144,6 +145,7 @@ def test_configuration_old_format_target_attributes_minimal() -> None:
     assert target.__repr__() == target.name
     assert target.name == 'minimal'
 
+    assert isinstance(target.settings.__repr__(), str)
     assert target.settings.ignore_default_flags is False
     assert target.settings.ignore_default_excludes is False
     assert target.settings.excludes_file is None
@@ -172,6 +174,7 @@ def test_configuration_old_format_target_attributes_excluded() -> None:
     """
     config = Configuration(EXCLUDES_CONFIG)
     target = config.get_target('excludes')
+    assert isinstance(target.settings.__repr__(), str)
 
     assert target.settings.ignore_default_flags is True
     assert target.settings.ignore_default_excludes is True
@@ -187,7 +190,7 @@ def test_configuration_old_format_target_attributes_excluded() -> None:
         target.flags
 
 
-def test_configuration_old_format_remote_server_config() -> None:
+def test_configuration_old_format_remote_server_config(mock_no_user_sync_config) -> None:
     """
     Test loading configuration with multiple servers and server specific flags
     """

@@ -2,6 +2,7 @@
 Treesync 'pull' subcommand
 """
 
+from treesync.exceptions import SyncError
 from .base import TreesyncCommand
 
 
@@ -21,6 +22,13 @@ class Pull(TreesyncCommand):
         targets = self.filter_targets(args.targets)
         if not targets:
             self.exit(1, 'No targets specified')
+        errors = False
         for target in targets:
             self.message(f'pull {target.destination} -> {target.source}')
-            target.pull(dry_run=args.dry_run)
+            try:
+                target.pull(dry_run=args.dry_run)
+            except SyncError as error:
+                self.error(error)
+                errors = True
+        if errors:
+            self.exit(1, 'Errors pulling targets')

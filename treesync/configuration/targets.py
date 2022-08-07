@@ -34,6 +34,9 @@ class TargetConfiguration(ConfigurationSection):
         'destination',
     )
 
+    def __repr__(self):
+        return f'{self.source} {self.destination}'
+
     @property
     def destination_server_settings(self):
         """
@@ -96,4 +99,4 @@ class TargetsConfigurationSection(ConfigurationSection):
         settings = getattr(self, name, None)
         if settings is None:
             raise ValueError(f'Invalid target name {name}')
-        return Target(name, settings)
+        return Target(name, settings.source, settings.destination, settings)

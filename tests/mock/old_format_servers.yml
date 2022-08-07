@@ -9,6 +9,8 @@ targets:
   data:
     source: /data
     destination: server1:/backup/data
+    flags:
+      - --usermap=demo:dummy
   data-remote:
     source: /data
     destination: server2:/backup/data-remote
