@@ -17,7 +17,7 @@ EXCLUDES_CONFIG = TEST_DATA.joinpath('excludes.yml')
 # Configuration file with hosts and sources
 HOST_SOURCES_CONFIG = TEST_DATA.joinpath('host_sources.yml')
 
-SERVERS_TARGET_NAME = 'data'
+SERVERS_TARGET_NAME = 'dummy'
 VALID_TARGET_NAME = 'minimal'
 INVALID_TARGET_NAME = 'no-such-target'
 VALID_HOST_NAME = 'server1'

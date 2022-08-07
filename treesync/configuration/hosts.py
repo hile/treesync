@@ -19,14 +19,14 @@ class HostTargetConfiguration(TargetConfiguration):
         return self.source
 
     @property
-    def host_config(self):
+    def __host_config__(self):
         """
         Return parent host configuration item
         """
-        return self.__parent__.host_config
+        return self.__parent__.__host_config__
 
     @property
-    def sources_config(self):
+    def __sources_config__(self):
         """
         Return sources configuration section
         """
@@ -41,14 +41,14 @@ class HostTargetList(ConfigurationList):
     __dict_loader_class__ = HostTargetConfiguration
 
     @property
-    def host_config(self) -> 'HostConfiguration':
+    def __host_config__(self) -> 'HostConfiguration':
         """
         Return parent host configuration item
         """
         return self.__parent__
 
     @property
-    def sources_config(self):
+    def __sources_config__(self):
         """
         Return sources configuration section
         """
@@ -85,7 +85,7 @@ class HostConfiguration(ConfigurationSection):
         return getattr(config, self.name, None)
 
     @property
-    def sources_config(self):
+    def __sources_config__(self):
         """
         Return sources configuration section
         """
@@ -104,7 +104,7 @@ class HostsSettings(ConfigurationList):
         self.hosts = Hosts()
 
     @property
-    def sources_config(self):
+    def __sources_config__(self):
         """
         Return sources configuration section
         """

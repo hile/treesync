@@ -1,15 +1,14 @@
 """
-Test cases for pathlib_tree.sync.configuration classes
+Unit tests for treesync.configuration common loader methods
 """
 
-import pathlib
 import shutil
+from pathlib import Path
 
 import pytest
 
 from pathlib_tree.tree import Tree, SKIPPED_PATHS
-from treesync.configuration.hosts import HostConfiguration, HostTargetList, HostTargetConfiguration
-from treesync.configuration.sources import SourcesConfigurationSection, SourceConfiguration
+from treesync.configuration.sources import SourcesConfigurationSection
 from treesync.configuration import Configuration
 from treesync.constants import (
     DEFAULT_EXCLUDES,
@@ -17,7 +16,7 @@ from treesync.constants import (
 )
 from treesync.target import ExcludesFile, Target, SyncError
 
-from .conftest import (
+from ..conftest import (
     EXCLUDES_FILE,
     EXCLUDES_CONFIG,
     EXPECTED_HOSTS_COUNT,
@@ -29,42 +28,11 @@ from .conftest import (
     UNEXPECTED_HOST_NAME,
     VALID_HOST_NAME,
 )
-from .utils import create_source_directory
-
-
-def validate_target_configuration(target: HostTargetConfiguration) -> None:
-    """
-    Validate attributes of a target configuration object
-    """
-    assert isinstance(target, HostTargetConfiguration)
-    assert isinstance(target.__repr__(), str)
-    assert isinstance(target.host_config, HostConfiguration)
-    assert isinstance(target.sources_config, SourcesConfigurationSection)
-
-
-def validate_host_configuration(host: HostConfiguration) -> None:
-    """
-    Validate attributes of a host configuration item
-    """
-    assert isinstance(host, HostConfiguration)
-    assert isinstance(host.sources_config, SourcesConfigurationSection)
-
-    assert isinstance(host.__repr__(), str)
-
-    assert isinstance(host.targets, HostTargetList)
-    assert isinstance(host.targets.host_config, HostConfiguration)
-    assert isinstance(host.targets.sources_config, SourcesConfigurationSection)
-    assert isinstance(host.targets.__repr__(), str)
-    for target in host.targets:
-        validate_target_configuration(target)
-
-
-def validate_source_configuration(source: SourceConfiguration) -> None:
-    """
-    Validate attributes of a source configuration item
-    """
-    assert isinstance(source, SourceConfiguration)
-    assert isinstance(source.__repr__(), str)
+from ..utils import create_source_directory
+from .validators import (
+    validate_host_configuration,
+    validate_source_configuration,
+)
 
 
 # pylint: disable=unused-argument
@@ -92,7 +60,7 @@ def test_configuration_hosts_properties() -> None:
     Test properties of loaded minimal configuration file with hosts and sources sections
     """
     config = Configuration(HOST_SOURCES_CONFIG)
-    assert isinstance(config.hosts.sources_config, SourcesConfigurationSection)
+    assert isinstance(config.hosts.__sources_config__, SourcesConfigurationSection)
 
     assert len(config.hosts) == EXPECTED_HOSTS_COUNT
     assert config.hosts.get(UNEXPECTED_HOST_NAME) is None
@@ -159,7 +127,7 @@ def test_configuration_old_format_target_attributes_minimal(mock_no_user_sync_co
     for flag in DEFAULT_FLAGS:
         assert flag in target.flags
 
-    assert isinstance(target.source, pathlib.Path)
+    assert isinstance(target.source, Path)
     assert isinstance(target.destination, str)
 
     assert config.defaults.rsync_command in target.get_rsync_cmd_args()
@@ -270,9 +238,9 @@ def test_configuration_old_format_sync_target_tmpdir(tmpdir) -> None:
 
     Tree(destination.parent).create()
 
-    assert not pathlib.Path(destination).exists()
+    assert not Path(destination).exists()
     target.push()
-    assert pathlib.Path(destination).exists()
+    assert Path(destination).exists()
     target.pull()
 
     shutil.rmtree(source)
