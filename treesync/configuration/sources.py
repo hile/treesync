@@ -8,8 +8,8 @@ class SourceConfiguration(ConfigurationSection):
     """
     A single sync source condiguration item
     """
-    name = None
-    path = None
+    name: str = ''
+    path: str = ''
 
     __required_settings__ = (
         'name',
@@ -17,7 +17,7 @@ class SourceConfiguration(ConfigurationSection):
     )
 
     def __repr__(self):
-        return f'{self.name} {self.path}' if self.name and self.path else ''
+        return f'{self.name} {self.path}'
 
 
 class SourcesConfigurationSection(ConfigurationList):

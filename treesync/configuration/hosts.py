@@ -1,26 +1,28 @@
 """
 Hosts configuration section for treesync
 """
-from typing import Optional
+from typing import List, Optional
 
 from sys_toolkit.configuration.base import ConfigurationSection, ConfigurationList
 
 from ..host import Hosts
+
+from .defaults import HOST_CONFIGURATION_DEFAULTS
 
 
 class HostTarget(ConfigurationSection):
     """
     Configuration section for a single host sync target
     """
-    source = None
-    destination = None
+    source: str = ''
+    destination: str = ''
     __required_settings__ = (
         'source',
         'destination',
     )
 
     def __repr__(self):
-        return self.source if self.source else ''
+        return self.source
 
     @property
     def host_config(self):
@@ -63,22 +65,22 @@ class HostConfiguration(ConfigurationSection):
     """
     Configuration for a single host
     """
-    targets: Optional[HostTargetList] = None
-    name = None
+    name: str = ''
+    rsync_path: Optional[str] = None
+    iconv: Optional[str] = None
+    flags: List[str] = []
+    targets: List[HostTargetList] = []
+
     __section_loaders__ = (
         HostTargetList,
     )
-    __default_settings__ = {
-        'rsync_path': None,
-        'flags': [],
-        'targets': [],
-    }
+    __default_settings__ = HOST_CONFIGURATION_DEFAULTS
     __required_settings__ = (
         'name',
     )
 
     def __repr__(self) -> str:
-        return f'{self.name}' if self.name else ''
+        return self.name
 
     @property
     def server_config(self) -> Optional[ConfigurationSection]:

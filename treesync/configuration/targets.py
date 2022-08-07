@@ -1,7 +1,7 @@
 """
 Configuration section for treesync targets
 """
-
+from typing import List, Optional
 
 from sys_toolkit.configuration.base import ConfigurationSection
 
@@ -12,8 +12,14 @@ class TargetConfiguration(ConfigurationSection):
     """
     Loader for named targets in TargetSettings
     """
-    source = ''
-    destination = ''
+    source: str = ''
+    destination: str = ''
+    ignore_default_flags: bool = False
+    ignore_default_excludes: bool = False
+    excludes_file: str = None
+    excludes: List[str] = []
+    flags: List[str] = []
+    iconv: Optional[str] = None
 
     __default_settings__ = {
         'ignore_default_flags': False,
