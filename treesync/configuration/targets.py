@@ -6,6 +6,7 @@ from typing import List, Optional
 from sys_toolkit.configuration.base import ConfigurationSection
 
 from ..target import Target
+from .servers import ServersConfigurationSection
 
 
 class TargetConfiguration(ConfigurationSection):
@@ -34,11 +35,11 @@ class TargetConfiguration(ConfigurationSection):
         'destination',
     )
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{self.source} {self.destination}'
 
     @property
-    def hostname(self):
+    def hostname(self) -> str:
         """
         Get hostname from target name (with host:target syntax)
         """
@@ -46,7 +47,7 @@ class TargetConfiguration(ConfigurationSection):
         return host
 
     @property
-    def destination_server_settings(self):
+    def destination_server_settings(self) -> Optional[ServersConfigurationSection]:
         """
         Return settings for destination server
         """
@@ -56,7 +57,7 @@ class TargetConfiguration(ConfigurationSection):
             return None
 
     @property
-    def destination_server_flags(self):
+    def destination_server_flags(self) -> List[str]:
         """
         Return flags specific to destination server
         """
@@ -84,7 +85,7 @@ class TargetsConfigurationSection(ConfigurationSection):
     __dict_loader_class__ = TargetConfiguration
 
     @property
-    def names(self):
+    def names(self) -> List[str]:
         """
         Get configured target names
         """
@@ -99,7 +100,7 @@ class TargetsConfigurationSection(ConfigurationSection):
         targets = [getattr(self, name) for name in self.names]
         return iter(targets)
 
-    def get_target(self, name):
+    def get(self, name) -> Target:
         """
         Get target by name
         """

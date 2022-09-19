@@ -1,7 +1,8 @@
 """
 Hosts configuration section for treesync
 """
-from typing import List, Optional
+from pathlib import Path
+from typing import List, Optional, TYPE_CHECKING
 
 from sys_toolkit.configuration.base import ConfigurationSection, ConfigurationList
 
@@ -11,23 +12,26 @@ from ..host import Hosts
 from .defaults import HOST_CONFIGURATION_DEFAULTS
 from .targets import Target, TargetConfiguration
 
+if TYPE_CHECKING:
+    from .sources import SourcesConfigurationSection
+
 
 class HostTargetConfiguration(TargetConfiguration):
     """
     Configuration section for a single host sync target
     """
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.source
 
     @property
-    def __host_config__(self):
+    def __host_config__(self) -> 'HostConfiguration':
         """
         Return parent host configuration item
         """
         return self.__parent__.__host_config__
 
     @property
-    def __sources_config__(self):
+    def __sources_config__(self) -> 'SourcesConfigurationSection':
         """
         Return sources configuration section
         """
@@ -41,11 +45,11 @@ class HostTargetConfiguration(TargetConfiguration):
         return self.__host_config__.name
 
     @property
-    def name(self):
+    def name(self) -> str:
         """
         Look up source name for this host target
         """
-        source_config = self.__sources_config__.get_source_config(self.source)
+        source_config = self.__sources_config__.get(self.source)
         if not source_config:
             raise ConfigurationError(
                 f'host {self.hostname} target {self} source does is not defined: {self.source}'
@@ -53,11 +57,11 @@ class HostTargetConfiguration(TargetConfiguration):
         return f'{self.hostname}:{source_config.name}'
 
     @property
-    def source_path(self):
+    def source_path(self) -> Path:
         """
         Look up source path for this host target
         """
-        source_config = self.__sources_config__.get_source_config(self.source)
+        source_config = self.__sources_config__.get(self.source)
         if not source_config:
             raise ConfigurationError(
                 f'host {self.hostname} target {self} source does is not defined: {self.source}'
@@ -80,7 +84,7 @@ class HostTargetList(ConfigurationList):
         return self.__parent__
 
     @property
-    def __sources_config__(self):
+    def __sources_config__(self) -> 'SourcesConfigurationSection':
         """
         Return sources configuration section
         """
@@ -109,6 +113,13 @@ class HostConfiguration(ConfigurationSection):
         return self.name
 
     @property
+    def __sources_config__(self) -> 'SourcesConfigurationSection':
+        """
+        Return sources configuration section
+        """
+        return self.__config_root__.sources  # pylint:disable=no-member
+
+    @property
     def server_config(self) -> Optional[ConfigurationSection]:
         """
         Return host settings from old servers config section
@@ -117,14 +128,7 @@ class HostConfiguration(ConfigurationSection):
         return getattr(config, self.name, None)
 
     @property
-    def __sources_config__(self):
-        """
-        Return sources configuration section
-        """
-        return self.__config_root__.sources  # pylint:disable=no-member
-
-    @property
-    def sync_targets(self):
+    def sync_targets(self) -> List[Target]:
         """
         Return sync targets for host
         """
@@ -148,12 +152,12 @@ class HostsSettings(ConfigurationList):
     __name__ = 'hosts'
     __dict_loader_class__ = HostConfiguration
 
-    def __init__(self, setting=None, data=None, parent=None):
+    def __init__(self, setting=None, data=None, parent=None) -> None:
         super().__init__(setting, data, parent)
         self.hosts = Hosts()
 
     @property
-    def __sources_config__(self):
+    def __sources_config__(self) -> 'SourcesConfigurationSection':
         """
         Return sources configuration section
         """

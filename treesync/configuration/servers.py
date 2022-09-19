@@ -13,7 +13,7 @@ class ServersConfigurationSection(ConfigurationSection):
     """
     __name__ = 'servers'
 
-    def __getattribute__(self, attr):
+    def __getattribute__(self, attr: str):
         """
         Return server by name
         """
@@ -25,7 +25,7 @@ class ServersConfigurationSection(ConfigurationSection):
             pass
         return super().__getattribute__(attr)
 
-    def __load_dictionary__(self, data):
+    def __load_dictionary__(self, data: dict) -> None:
         """
         Load server flag data from dictionary. Keys in dictionary are not required
         to be valid python identifiers

@@ -32,7 +32,7 @@ class SourcesConfigurationSection(ConfigurationList):
     __name__ = 'sources'
     __dict_loader_class__ = SourceConfiguration
 
-    def get_source_config(self, name: str) -> Optional[SourceConfiguration]:
+    def get(self, name: str) -> Optional[SourceConfiguration]:
         """
         Get source configuration matching name
         """

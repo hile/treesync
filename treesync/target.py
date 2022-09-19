@@ -3,9 +3,10 @@ Tree sync target
 """
 
 import os
-import pathlib
 import sys
-import typing
+
+from pathlib import Path, _windows_flavour, _posix_flavour
+from typing import List, Optional, TYPE_CHECKING
 
 from tempfile import NamedTemporaryFile
 from subprocess import run, CalledProcessError
@@ -14,19 +15,19 @@ from sys_toolkit.textfile import LineTextFile
 
 from .exceptions import SyncError
 
-if typing.TYPE_CHECKING:  # pragma: no cover
+if TYPE_CHECKING:  # pragma: no cover
     from treesync.configuration.targets import TargetConfiguration
 
 
-class ExcludesFile(pathlib.Path):
+class ExcludesFile(Path):
     """
     Rsync excludes parser
     """
     # pylint: disable=protected-access
-    _flavour = pathlib._windows_flavour if os.name == 'nt' else pathlib._posix_flavour
+    _flavour = _windows_flavour if os.name == 'nt' else _posix_flavour
 
     @property
-    def excludes(self):
+    def excludes(self) -> List[LineTextFile]:
         """
         Return excludes file items
         """
@@ -41,7 +42,7 @@ class TemporaryExcludesFile:
     A temporary excludes file, merging excludes flags from various
     sources for rsync
     """
-    def __init__(self, target):
+    def __init__(self, target) -> None:
         self.target = target
         # pylint: disable=consider-using-with
         self.__tempfile__ = NamedTemporaryFile(mode='w', prefix=f'treesync-{self.target.name}')
@@ -49,7 +50,7 @@ class TemporaryExcludesFile:
             self.__tempfile__.write(f'{line}\n')
         self.__tempfile__.flush()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """
         Return path to temporary file
         """
@@ -60,14 +61,14 @@ class Target:
     """
     Tree sync target
     """
-    def __init__(self, name, source: str, destination: str, settings: 'TargetConfiguration'):
+    def __init__(self, name, source: str, destination: str, settings: 'TargetConfiguration') -> None:
         self.name = name
-        self.source = pathlib.Path(source)
+        self.source = Path(source)
         self.destination = destination
         self.settings = settings if settings else {}
         self.__excludes_file__ = None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.name
 
     @property
@@ -78,7 +79,7 @@ class Target:
         return self.settings.__config_root__.defaults
 
     @property
-    def excluded(self):
+    def excluded(self) -> List[Path]:
         """
         Return list of excluded filenames applicable to target
         """
@@ -92,7 +93,7 @@ class Target:
         return sorted(set(excluded))
 
     @property
-    def tree_excludes_file(self):
+    def tree_excludes_file(self) -> Optional[ExcludesFile]:
         """
         Return tree specific excludes file
         """
@@ -108,7 +109,7 @@ class Target:
         return None
 
     @property
-    def excludes_file(self):
+    def excludes_file(self) -> TemporaryExcludesFile:
         """
         Return temporary excludes file for commands
         """
@@ -117,7 +118,7 @@ class Target:
         return self.__excludes_file__
 
     @property
-    def flags(self):
+    def flags(self) -> List[str]:
         """
         Return list of rsync flags for commands
         """
@@ -137,7 +138,7 @@ class Target:
         flags.append(f'--exclude-from={self.excludes_file}')
         return flags
 
-    def get_rsync_cmd_args(self, dry_run=False):
+    def get_rsync_cmd_args(self, dry_run: bool = False):
         """
         Return rsync command and arguments excluding source and destination
         """
@@ -146,7 +147,7 @@ class Target:
             args.append('--dry-run')
         return args
 
-    def get_pull_command_args(self, dry_run=False):
+    def get_pull_command_args(self, dry_run: bool = False):
         """
         Return 'pull' command arguments
         """
@@ -157,7 +158,7 @@ class Target:
         ])
         return args
 
-    def get_push_command_args(self, dry_run=False):
+    def get_push_command_args(self, dry_run: bool = False) -> List[str]:
         """
         Return 'push' command arguments
         """
@@ -183,13 +184,13 @@ class Target:
         except CalledProcessError as error:
             raise SyncError(error) from error
 
-    def pull(self, dry_run=False):
+    def pull(self, dry_run=False) -> None:
         """
         Pull data from destination to source with rsync
         """
         self.run_sync_command(*self.get_pull_command_args(dry_run))
 
-    def push(self, dry_run=False):
+    def push(self, dry_run=False) -> None:
         """
         Push data from source to destination with rsync
         """

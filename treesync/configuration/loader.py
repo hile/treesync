@@ -1,7 +1,7 @@
 """
 Configuration loader for treesync
 """
-from typing import Optional
+from typing import List, Optional
 
 from sys_toolkit.configuration.yaml import YamlConfiguration
 
@@ -11,7 +11,7 @@ from .defaults import Defaults
 from .hosts import HostsSettings
 from .servers import ServersConfigurationSection
 from .sources import SourcesConfigurationSection
-from .targets import TargetsConfigurationSection
+from .targets import TargetsConfigurationSection, Target
 
 
 class Configuration(YamlConfiguration):
@@ -33,15 +33,15 @@ class Configuration(YamlConfiguration):
         TargetsConfigurationSection,
     )
 
-    def __init__(self, path=None, parent=None, debug_enabled=False, silent=False):
+    def __init__(self, path=None, parent=None, debug_enabled=False, silent=False) -> None:
         self.__default_paths__ = DEFAULT_CONFIGURATION_PATHS
         super().__init__(path, parent, debug_enabled, silent)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return 'treesync config'
 
     @property
-    def sync_targets(self):
+    def sync_targets(self) -> List[Target]:
         """
         Get configured sync targets
         """
@@ -51,9 +51,9 @@ class Configuration(YamlConfiguration):
             targets.append(self.get_target(name))
         return targets
 
-    def get_target(self, name):
+    def get_target(self, name: str) -> Target:
         """
         Get target by name
         """
         # pylint: disable=no-member
-        return self.targets.get_target(name)
+        return self.targets.get(name)

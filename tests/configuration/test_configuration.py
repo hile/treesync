@@ -171,17 +171,17 @@ def test_configuration_old_format_remote_server_config(mock_no_user_sync_config)
     targets = list(config.targets)
     assert len(targets) == expected_target_count
 
-    no_flags_target = config.targets.get_target('data-remote')
+    no_flags_target = config.targets.get('data-remote')
     assert no_flags_target.settings.destination_server_settings is None
     assert no_flags_target.settings.destination_server_flags == []
 
     # Server with empty (but defined) configuration section settings
-    dummy_target = config.targets.get_target('dummy')
+    dummy_target = config.targets.get('dummy')
     assert dummy_target.settings.destination_server_settings == {}
     assert dummy_target.settings.destination_server_flags == []
 
     # Server with iconv and rsync path flags
-    flags_target = config.targets.get_target('data')
+    flags_target = config.targets.get('data')
     assert flags_target.settings.destination_server_settings is not None
     expected_flags = [
         '--usermap=demo:dummy',
