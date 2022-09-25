@@ -23,10 +23,15 @@ hosts:
     targets:
       - source: dummy
         destination: dummy-server:/dump
-      - source: no-such-source
-        destination: dummy-server:/all
 sources:
   - name: data
     path: /data
   - name: dummy
     path: /no-data
+targets:
+  dummy-server:dummy:
+    source: /no-data
+    destination: dummy-server:/dump
+  demo-target:targeted:
+    source: /demo
+    destination: demo-server:/demo

@@ -17,6 +17,9 @@ EXCLUDES_CONFIG = TEST_DATA.joinpath('excludes.yml')
 # Configuration file with hosts and sources
 HOST_SOURCES_CONFIG = TEST_DATA.joinpath('host_sources.yml')
 
+# Configuration file with invalid host source configuuration
+HOST_INVALID_SOURCE_CONFIG = TEST_DATA.joinpath('invalid_host_targets.yml')
+
 DUMMY_TARGET_NAME = 'dummy'
 
 VALID_TARGET_NAME = 'minimal'
@@ -32,6 +35,7 @@ EXPECTED_SYNC_TARGET_COUNT = 2
 # These constants match data in HOST_SOURCES_CONFIG file
 EXPECTED_HOSTS_COUNT = 3
 EXPECTED_SOURCES_COUNT = 2
+EXPECTED_HOSTS_TOTAL_TARGETS_COUNT = 5
 
 # test configuration files for old configuration sections
 OLD_FORMAT_ICONV_CONFIG = TEST_DATA.joinpath('old_format_iconv_flags.yml')

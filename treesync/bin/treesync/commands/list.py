@@ -25,4 +25,4 @@ class List(TreesyncCommand):
         if not targets:
             targets = self.config.sync_targets
         for target in targets:
-            self.message(f'{target}')
+            self.message(f'{target.name}')

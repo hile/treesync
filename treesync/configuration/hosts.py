@@ -52,7 +52,7 @@ class HostTargetConfiguration(TargetConfiguration):
         source_config = self.__sources_config__.get(self.source)
         if not source_config:
             raise ConfigurationError(
-                f'host {self.hostname} target {self} source does is not defined: {self.source}'
+                f'host {self.hostname} target {self} source is not defined: {self.source}'
             )
         return f'{self.hostname}:{source_config.name}'
 
@@ -64,7 +64,7 @@ class HostTargetConfiguration(TargetConfiguration):
         source_config = self.__sources_config__.get(self.source)
         if not source_config:
             raise ConfigurationError(
-                f'host {self.hostname} target {self} source does is not defined: {self.source}'
+                f'host {self.hostname} target {self} source is not defined: {self.source}'
             )
         return source_config.path
 
@@ -136,6 +136,7 @@ class HostConfiguration(ConfigurationSection):
         for target_config in self.targets:
             targets.append(
                 Target(
+                    self.name,
                     target_config.name,
                     target_config.source_path,
                     target_config.destination,

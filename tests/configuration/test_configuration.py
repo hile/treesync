@@ -14,14 +14,17 @@ from treesync.constants import (
     DEFAULT_EXCLUDES,
     DEFAULT_FLAGS,
 )
+from treesync.exceptions import ConfigurationError
 from treesync.target import ExcludesFile, Target, SyncError
 
 from ..conftest import (
     EXCLUDES_FILE,
     EXCLUDES_CONFIG,
     EXPECTED_HOSTS_COUNT,
+    EXPECTED_HOSTS_TOTAL_TARGETS_COUNT,
     EXPECTED_SOURCES_COUNT,
     EXPECTED_SYNC_TARGET_COUNT,
+    HOST_INVALID_SOURCE_CONFIG,
     HOST_SOURCES_CONFIG,
     OLD_FORMAT_ICONV_CONFIG,
     OLD_FORMAT_MINIMAL_CONFIG,
@@ -34,6 +37,10 @@ from .validators import (
     validate_host_configuration,
     validate_source_configuration,
 )
+
+DUMMY_TARGET_NAME = 'dummy'
+DUMMY_SERVER_NAME = 'dummy-server'
+MINIMAL_TARGET_NAME = 'minimal'
 
 
 # pylint: disable=unused-argument
@@ -74,6 +81,20 @@ def test_configuration_hosts_properties() -> None:
         validate_host_configuration(host)
 
 
+def test_configuration_hosts_invalid_sources() -> None:
+    """
+    Test parsing of a host configuration with invalid host sources
+    """
+    config = Configuration(HOST_INVALID_SOURCE_CONFIG)
+    target = config.hosts[0].targets[0]  # pylint: disable=unsubscriptable-object
+    with pytest.raises(ConfigurationError):
+        target.name  # pylint: disable=pointless-statement
+    with pytest.raises(ConfigurationError):
+        target.source_path  # pylint: disable=pointless-statement
+    with pytest.raises(ConfigurationError):
+        config.sync_targets  # pylint: disable=pointless-statement
+
+
 def test_configuration_sources_properties() -> None:
     """
     Test properties of loaded minimal configuration file with hosts and sources sections
@@ -94,7 +115,7 @@ def test_configuration_old_format_minimal(mock_no_user_sync_config) -> None:
     sync_targets = config.sync_targets
     assert len(sync_targets) == 1
 
-    target = config.get_target('minimal')
+    target = config.targets.get(MINIMAL_TARGET_NAME)
     assert target.tree_excludes_file is None
 
 
@@ -105,14 +126,15 @@ def test_configuration_old_format_target_attributes_minimal(mock_no_user_sync_co
     config = Configuration(OLD_FORMAT_MINIMAL_CONFIG)
 
     with pytest.raises(ValueError):
-        config.get_target('default')
+        config.targets.get('default')
 
-    target = config.get_target('minimal')
+    target = config.targets.get(MINIMAL_TARGET_NAME)
     assert isinstance(target, Target)
     assert target.default_settings == config.defaults
 
+    assert target.hostname is None
+    assert target.name == MINIMAL_TARGET_NAME
     assert target.__repr__() == target.name
-    assert target.name == 'minimal'
 
     assert isinstance(target.settings.__repr__(), str)
     assert target.settings.ignore_default_flags is False
@@ -142,7 +164,7 @@ def test_configuration_old_format_target_attributes_excluded() -> None:
     Test loading target with excluded attributes
     """
     config = Configuration(EXCLUDES_CONFIG)
-    target = config.get_target('excludes')
+    target = config.targets.get('excludes')
     assert isinstance(target.settings.__repr__(), str)
 
     assert target.settings.ignore_default_flags is True
@@ -176,7 +198,10 @@ def test_configuration_old_format_remote_server_config(mock_no_user_sync_config)
     assert no_flags_target.settings.destination_server_flags == []
 
     # Server with empty (but defined) configuration section settings
-    dummy_target = config.targets.get('dummy')
+    dummy_target = config.targets.get(DUMMY_TARGET_NAME)
+    assert dummy_target.hostname == DUMMY_SERVER_NAME
+    assert dummy_target.__repr__() == f'{DUMMY_SERVER_NAME}:{DUMMY_TARGET_NAME}'
+
     assert dummy_target.settings.destination_server_settings == {}
     assert dummy_target.settings.destination_server_flags == []
 
@@ -207,7 +232,7 @@ def test_configuration_old_format_sync_target_attributes_iconv() -> None:
     Test loading target with excluded attributes
     """
     config = Configuration(OLD_FORMAT_ICONV_CONFIG)
-    target = config.get_target('converted')
+    target = config.targets.get('converted')
 
     assert target.settings.ignore_default_excludes is False
     assert target.settings.ignore_default_flags is True
@@ -227,7 +252,7 @@ def test_configuration_old_format_sync_target_tmpdir(tmpdir) -> None:
     assert not destination.exists()
 
     config = Configuration(config_file)
-    target = config.get_target('test')
+    target = config.targets.get('test')
     assert target.source == source
     assert target.destination == str(destination)
 
@@ -258,3 +283,34 @@ def test_host_configuration_sync_targets(mock_config_host_sources):
     config = Configuration()
     host = config.hosts.get(VALID_HOST_NAME)
     assert len(host.sync_targets) == EXPECTED_SYNC_TARGET_COUNT
+
+
+# pylint: disable=unused-argument
+def test_cofiguration_sync_targets_mixed_list(mock_no_user_sync_config) -> None:
+    """
+    Test loading the list of sync targets with a configuration file containing both
+    hosts and targets types of configuration
+    """
+    config = Configuration(HOST_SOURCES_CONFIG)
+    for target in config.sync_targets:
+        print(target)
+    assert len(config.sync_targets) == EXPECTED_HOSTS_TOTAL_TARGETS_COUNT
+
+    a = config.sync_targets[-1]
+    b = config.sync_targets[0]
+
+    assert a == str(a)
+    assert a != b
+
+    assert a < b
+    assert not a < a  # pylint: disable=comparison-with-itself
+    assert b > a
+    assert not b > b  # pylint: disable=comparison-with-itself
+
+    assert a <= b
+    assert a <= a  # pylint: disable=comparison-with-itself
+    assert a <= str(a)
+
+    assert b >= a
+    assert a >= a  # pylint: disable=comparison-with-itself
+    assert b >= str(b)

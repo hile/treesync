@@ -42,7 +42,7 @@ class TreesyncCommand(Command):
         targets = []
         for name in target_names:
             try:
-                target = self.config.get_target(name)
+                target = self.config.targets.get(name)
                 targets.append(target)
             except ValueError:
                 self.error(f'No such target: {name}')

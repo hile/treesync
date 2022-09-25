@@ -23,6 +23,7 @@ class Configuration(YamlConfiguration):
     servers: Optional[ServersConfigurationSection] = None
     sources: Optional[SourcesConfigurationSection] = None
     targets: Optional[TargetsConfigurationSection] = None
+    __sync_targets__: Optional[List[Target]] = None
 
     __default_paths__ = []
     __section_loaders__ = (
@@ -45,15 +46,13 @@ class Configuration(YamlConfiguration):
         """
         Get configured sync targets
         """
-        targets = []
-        # pylint: disable=no-member
-        for name in self.targets.names:
-            targets.append(self.get_target(name))
-        return targets
-
-    def get_target(self, name: str) -> Target:
-        """
-        Get target by name
-        """
-        # pylint: disable=no-member
-        return self.targets.get(name)
+        if self.__sync_targets__ is None:
+            targets = []
+            for host in self.hosts:  # pylint: disable=not-an-iterable
+                for target in host.sync_targets:
+                    targets.append(target)
+            for target in self.targets.sync_targets:  # pylint: disable=not-an-iterable
+                if target not in targets:
+                    targets.append(target)
+            self.__sync_targets__ = targets
+        return self.__sync_targets__

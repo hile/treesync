@@ -1,0 +1,10 @@
+#
+# Minimal treesync configuration file example with invalid host targets
+#
+---
+hosts:
+  - name: servername
+    rsync_path: /usr/local/bin/rsync
+    targets:
+      - source: missing-target
+        destination: servername:/no-such-source

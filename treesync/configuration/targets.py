@@ -43,18 +43,20 @@ class TargetConfiguration(ConfigurationSection):
         """
         Get hostname from target name (with host:target syntax)
         """
-        host, _path = str(self.destination).split(':', 1)
-        return host
+        try:
+            host, _path = str(self.destination).split(':', 1)
+            return host
+        except ValueError:
+            return None
 
     @property
     def destination_server_settings(self) -> Optional[ServersConfigurationSection]:
         """
         Return settings for destination server
         """
-        try:
-            return getattr(self.__config_root__.servers, self.hostname, None)  # pylint:disable=no-member
-        except ValueError:
+        if not self.hostname:
             return None
+        return getattr(self.__config_root__.servers, self.hostname, None)  # pylint:disable=no-member
 
     @property
     def destination_server_flags(self) -> List[str]:
@@ -100,11 +102,27 @@ class TargetsConfigurationSection(ConfigurationSection):
         targets = [getattr(self, name) for name in self.names]
         return iter(targets)
 
+    @property
+    def sync_targets(self) -> List[Target]:
+        """
+        List of all sync targets
+        """
+        targets = []
+        for name in self.names:
+            targets.append(self.get(name))
+        return targets
+
     def get(self, name) -> Target:
         """
         Get target by name
         """
-        settings = getattr(self, name, None)
-        if settings is None:
+        target_config = getattr(self, name, None)
+        if target_config is None:
             raise ValueError(f'Invalid target name {name}')
-        return Target(name, settings.source, settings.destination, settings)
+        return Target(
+            target_config.hostname,
+            name,
+            target_config.source,
+            target_config.destination,
+            target_config
+        )

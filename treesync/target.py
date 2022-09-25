@@ -5,6 +5,7 @@ Tree sync target
 import os
 import sys
 
+from operator import ge, gt, le, lt
 from pathlib import Path, _windows_flavour, _posix_flavour
 from typing import List, Optional, TYPE_CHECKING
 
@@ -59,9 +60,16 @@ class TemporaryExcludesFile:
 
 class Target:
     """
-    Tree sync target
+    Tree sync target, defined by hostname and target name
     """
-    def __init__(self, name, source: str, destination: str, settings: 'TargetConfiguration') -> None:
+    def __init__(self,
+                 hostname: str,
+                 name: str,
+                 source: str,
+                 destination: str,
+                 settings: 'TargetConfiguration') -> None:
+
+        self.hostname = hostname
         self.name = name
         self.source = Path(source)
         self.destination = destination
@@ -69,7 +77,42 @@ class Target:
         self.__excludes_file__ = None
 
     def __repr__(self) -> str:
+        if self.hostname:
+            return f'{self.hostname}:{self.name}'
         return self.name
+
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return self.__repr__() == other
+        for attr in ('hostname', 'name'):
+            if getattr(self, attr) != getattr(other, attr):
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __cmp_targets__(self, other, op, default: bool):  # pylint: disable=invalid-name
+        if isinstance(other, str):
+            return op(self.__repr__(), other)
+        for attr in ('hostname', 'name'):
+            a = getattr(self, attr)
+            b = getattr(other, attr)
+            if a != b:
+                return op(a, b)
+        return default
+
+    def __ge__(self, other):
+        return self.__cmp_targets__(other, ge, True)
+
+    def __gt__(self, other):
+        return self.__cmp_targets__(other, gt, False)
+
+    def __le__(self, other):
+        return self.__cmp_targets__(other, le, True)
+
+    def __lt__(self, other):
+        return self.__cmp_targets__(other, lt, False)
 
     @property
     def default_settings(self):
@@ -138,6 +181,21 @@ class Target:
         flags.append(f'--exclude-from={self.excludes_file}')
         return flags
 
+    @staticmethod
+    def run_sync_command(*args):
+        """
+        Run rsync command
+        """
+        try:
+            return run(
+                args,
+                stdout=sys.stdout,
+                stderr=sys.stderr,
+                check=True
+            )
+        except CalledProcessError as error:
+            raise SyncError(error) from error
+
     def get_rsync_cmd_args(self, dry_run: bool = False):
         """
         Return rsync command and arguments excluding source and destination
@@ -169,28 +227,13 @@ class Target:
         ])
         return args
 
-    @staticmethod
-    def run_sync_command(*args):
-        """
-        Run rsync command
-        """
-        try:
-            return run(
-                args,
-                stdout=sys.stdout,
-                stderr=sys.stderr,
-                check=True
-            )
-        except CalledProcessError as error:
-            raise SyncError(error) from error
-
-    def pull(self, dry_run=False) -> None:
+    def pull(self, dry_run: bool = False) -> None:
         """
         Pull data from destination to source with rsync
         """
         self.run_sync_command(*self.get_pull_command_args(dry_run))
 
-    def push(self, dry_run=False) -> None:
+    def push(self, dry_run: bool = False) -> None:
         """
         Push data from source to destination with rsync
         """
