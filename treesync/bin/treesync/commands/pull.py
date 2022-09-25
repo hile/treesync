@@ -19,9 +19,15 @@ class Pull(TreesyncCommand):
         return super().register_rsync_arguments(parser)
 
     def run(self, args):
+        """
+        Pull specified sync targets
+        """
+        if not args.targets:
+            self.exit(1, 'No targets specified')
         targets = self.filter_targets(args.targets)
         if not targets:
             self.exit(1, 'No targets specified')
+
         errors = False
         for target in targets:
             self.message(f'pull {target.destination} -> {target.source}')

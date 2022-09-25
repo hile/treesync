@@ -1,6 +1,7 @@
 """
 Configuration loader for treesync
 """
+from fnmatch import fnmatch
 from typing import List, Optional
 
 from sys_toolkit.configuration.yaml import YamlConfiguration
@@ -56,3 +57,32 @@ class Configuration(YamlConfiguration):
                     targets.append(target)
             self.__sync_targets__ = targets
         return self.__sync_targets__
+
+    def filter_sync_targets(self, patterns: List[str]) -> List[Target]:
+        """
+        Filter sync targets by list of patterns as strings
+        """
+        def match_patterns(patterns, target):
+            """
+            Match target to specified patterns
+            """
+            for pattern in patterns:
+                if target.hostname and fnmatch(target.hostname, pattern):
+                    return True
+                if str(target.name) == pattern or fnmatch(str(target.name), pattern):
+                    return True
+                try:
+                    _host, name = target.name.split(':', 1)
+                    if fnmatch(name, pattern):
+                        return True
+                except ValueError:
+                    pass
+            return False
+
+        matches = []
+        if not patterns:
+            return self.sync_targets
+        for target in self.sync_targets:
+            if match_patterns(patterns, target):
+                matches.append(target)
+        return matches

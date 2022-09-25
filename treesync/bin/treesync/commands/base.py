@@ -39,11 +39,4 @@ class TreesyncCommand(Command):
         """
         Filter target names
         """
-        targets = []
-        for name in target_names:
-            try:
-                target = self.config.targets.get(name)
-                targets.append(target)
-            except ValueError:
-                self.error(f'No such target: {name}')
-        return targets
+        return self.config.filter_sync_targets(target_names)

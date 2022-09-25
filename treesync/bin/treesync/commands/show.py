@@ -38,8 +38,6 @@ class Show(TreesyncCommand):
         """
         targets = self.filter_targets(args.targets)
         if not targets:
-            targets = self.config.sync_targets
-        if not targets:
             self.exit(1, 'No targets to show')
         for target in targets:
             self.print_target_details(target)

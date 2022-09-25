@@ -21,8 +21,5 @@ class List(TreesyncCommand):
         """
         List configured sync targets
         """
-        targets = self.filter_targets(args.targets)
-        if not targets:
-            targets = self.config.sync_targets
-        for target in targets:
+        for target in self.filter_targets(args.targets):
             self.message(f'{target.name}')
