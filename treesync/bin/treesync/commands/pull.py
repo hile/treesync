@@ -2,23 +2,30 @@
 Treesync 'pull' subcommand
 """
 
+from argparse import ArgumentParser, Namespace
+
 from treesync.exceptions import SyncError
 from .base import TreesyncCommand
+
+DESCRIPTION = """
+Pull sync targets to local directories
+"""
 
 
 class Pull(TreesyncCommand):
     """
     Tree pull subcommand
     """
+    description = DESCRIPTION
     name = 'pull'
 
-    def register_parser_arguments(self, parser):
+    def register_parser_arguments(self, parser: ArgumentParser) -> ArgumentParser:
         """
         Register arguments for 'pull' command
         """
         return super().register_rsync_arguments(parser)
 
-    def run(self, args):
+    def run(self, args: Namespace) -> None:
         """
         Pull specified sync targets
         """

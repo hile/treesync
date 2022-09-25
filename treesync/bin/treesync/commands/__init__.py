@@ -1,3 +1,3 @@
 """
-Sumcommands for 'treesync' Cli
+Subcommands for 'treesync' CLI
 """

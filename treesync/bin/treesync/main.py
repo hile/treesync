@@ -6,11 +6,16 @@ from .commands.pull import Pull
 from .commands.push import Push
 from .commands.show import Show
 
+DESCRIPTION = """
+Synchrohize directory trees with known parameters using rsync pull and push
+"""
+
 
 class Treesync(Script):
     """
     CLI command 'treesync' main  entrypoint
     """
+    description = DESCRIPTION
     subcommands = (
         List,
         Pull,
@@ -19,7 +24,7 @@ class Treesync(Script):
     )
 
 
-def main():
+def main() -> None:
     """
     CLI command 'treesync' main  entrypoint
     """

@@ -1,6 +1,7 @@
 """
 Treesync 'show' subcommand
 """
+from argparse import ArgumentParser, Namespace
 
 from .base import TreesyncCommand
 
@@ -11,13 +12,13 @@ class Show(TreesyncCommand):
     """
     name = 'show'
 
-    def register_parser_arguments(self, parser):
+    def register_parser_arguments(self, parser: ArgumentParser) -> ArgumentParser:
         """
         Register only common base arguments
         """
         return super().register_common_arguments(parser)
 
-    def print_target_details(self, target):
+    def print_target_details(self, target: ArgumentParser) -> ArgumentParser:
         """
         Print details for target
         """
@@ -26,13 +27,10 @@ class Show(TreesyncCommand):
         self.message(f'name:          {target.name}')
         self.message(f'source:        {target.source}')
         self.message(f'destitination: {target.destination}')
-        self.message(f'iconv:         {target.settings.iconv}')
-        self.message(f'excludes file: {target.settings.excludes_file}')
-        self.message(f'excludes:      {target.settings.excludes}')
         self.message(f'pull command:  {pull_command}')
         self.message(f'push command:  {push_command}')
 
-    def run(self, args):
+    def run(self, args: Namespace) -> None:
         """
         Show details for named targets
         """

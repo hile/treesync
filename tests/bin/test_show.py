@@ -7,8 +7,8 @@ from treesync.bin.treesync.main import Treesync
 
 from ..conftest import DUMMY_TARGET_NAME
 
-EXPECTED_OUTPUT_LINES_VALID_TARGET = 8
-EXPECTED_OUTPUT_LINES_ALL_TARGETS = 24
+EXPECTED_OUTPUT_LINES_VALID_TARGET = 5
+EXPECTED_OUTPUT_LINES_ALL_TARGETS = 15
 
 
 # pylint: disable=unused-argument

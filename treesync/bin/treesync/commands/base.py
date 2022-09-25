@@ -1,17 +1,21 @@
 
+from argparse import ArgumentParser, Namespace
+from typing import List
+
 from cli_toolkit.command import Command
 
 from treesync.configuration import Configuration
+from treesync.target import Target
 
 
 class TreesyncCommand(Command):
     """
     Common base class for treesync subcommands
     """
-    config = None
+    config: Configuration = None
 
     @staticmethod
-    def register_common_arguments(parser):
+    def register_common_arguments(parser: ArgumentParser) -> ArgumentParser:
         """
         Add parser arguments common to all commands
         """
@@ -19,7 +23,7 @@ class TreesyncCommand(Command):
         parser.add_argument('targets', nargs='*', help='Sync command targets')
         return parser
 
-    def register_rsync_arguments(self, parser):
+    def register_rsync_arguments(self, parser: ArgumentParser) -> ArgumentParser:
         """
         Register arguments specific to rsync commands (pull/push)
         """
@@ -31,12 +35,15 @@ class TreesyncCommand(Command):
         )
         return parser
 
-    def parse_args(self, args=None, namespace=None):
+    def parse_args(self, args: Namespace = None, namespace: Namespace = None) -> Namespace:
+        """
+        Parse arguments and append config to command
+        """
         self.config = Configuration(args.config)
         return args
 
-    def filter_targets(self, target_names):
+    def filter_targets(self, patterns: List[str]) -> List[Target]:
         """
-        Filter target names
+        Filter targets by list of string patterns, returning list of Target objects
         """
-        return self.config.filter_sync_targets(target_names)
+        return self.config.filter_sync_targets(patterns)

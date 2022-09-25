@@ -1,24 +1,31 @@
 """
 Treesync 'push' subcommand
 """
+from argparse import ArgumentParser, Namespace
 
 from treesync.exceptions import SyncError
+
 from .base import TreesyncCommand
+
+DESCRIPTION = """
+Push directories to remote targets
+"""
 
 
 class Push(TreesyncCommand):
     """
     Tree push subcommand
     """
+    description = DESCRIPTION
     name = 'push'
 
-    def register_parser_arguments(self, parser):
+    def register_parser_arguments(self, parser: ArgumentParser) -> ArgumentParser:
         """
         Register arguments for 'pull' command
         """
         return super().register_rsync_arguments(parser)
 
-    def run(self, args):
+    def run(self, args: Namespace) -> None:
         """
         Push specified targets
         """
