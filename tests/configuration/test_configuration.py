@@ -314,8 +314,6 @@ def test_cofiguration_sync_targets_mixed_list(mock_no_user_sync_config) -> None:
     hosts and targets types of configuration
     """
     config = Configuration(HOST_SOURCES_CONFIG)
-    for target in config.sync_targets:
-        print(target)
     assert len(config.sync_targets) == EXPECTED_HOSTS_TOTAL_TARGETS_COUNT
 
     a = config.sync_targets[-1]
