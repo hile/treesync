@@ -1,3 +1,9 @@
+#
+# Example file of the old treesync tool format where targets are configured in a simple list
+# of items, repating the source and destination for each target, with server specific settings
+# defined in 'servers' section
+#
+---
 servers:
   server1:
     rsync_path: /usr/local/bin/rsync
