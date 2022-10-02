@@ -145,6 +145,20 @@ class HostConfiguration(ConfigurationSection):
             )
         return targets
 
+    @property
+    def destination_server_flags(self) -> List[str]:
+        """
+        Return flags specific to destination this host
+        """
+        flags = []
+        if self.flags:
+            flags.extend(self.flags)
+        if self.iconv:
+            flags.append(f'--iconv={self.iconv}')
+        if self.rsync_path:
+            flags.append(f'--rsync-path={self.rsync_path}')
+        return flags
+
 
 class HostsSettings(ConfigurationList):
     """
