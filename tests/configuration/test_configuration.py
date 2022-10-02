@@ -21,11 +21,13 @@ from ..conftest import (
     EXCLUDES_FILE,
     EXCLUDES_CONFIG,
     EXPECTED_HOSTS_COUNT,
+    EXPECTED_HOST_TARGET_FLAGS,
     EXPECTED_HOSTS_TOTAL_TARGETS_COUNT,
     EXPECTED_SOURCES_COUNT,
     EXPECTED_SYNC_TARGET_COUNT,
     HOST_INVALID_SOURCE_CONFIG,
     HOST_SOURCES_CONFIG,
+    NO_FLAGS_HOST_NAME,
     OLD_FORMAT_ICONV_CONFIG,
     OLD_FORMAT_MINIMAL_CONFIG,
     OLD_FORMAT_SERVER_FLAGS_CONFIG,
@@ -283,6 +285,26 @@ def test_host_configuration_sync_targets(mock_config_host_sources):
     config = Configuration()
     host = config.hosts.get(VALID_HOST_NAME)
     assert len(host.sync_targets) == EXPECTED_SYNC_TARGET_COUNT
+
+
+# pylint: disable=unused-argument
+def test_host_configuration_with_flags(mock_config_host_sources):
+    """
+    Test loading a host via configuration and with flags
+    """
+    config = Configuration()
+    host = config.hosts.get(VALID_HOST_NAME)
+    assert host.destination_server_flags == EXPECTED_HOST_TARGET_FLAGS
+
+
+# pylint: disable=unused-argument
+def test_host_configuration_no_flags(mock_config_host_sources):
+    """
+    Test loading a host via configuration and listing
+    """
+    config = Configuration()
+    host = config.hosts.get(NO_FLAGS_HOST_NAME)
+    assert host.destination_server_flags == []
 
 
 # pylint: disable=unused-argument

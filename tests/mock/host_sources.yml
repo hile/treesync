@@ -7,6 +7,8 @@ hosts:
   - name: server1
     rsync_path: /usr/local/bin/rsync
     iconv: UTF-8-MAC,UTF-8
+    flags:
+      - --usermap=demo:dummy
     targets:
       - source: data
         destination: server1:/backup/data

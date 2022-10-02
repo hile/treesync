@@ -27,6 +27,7 @@ MISSING_SOURCE_NAME = 'no-such-source'
 INVALID_TARGET_NAME = 'no-such-target'
 
 VALID_HOST_NAME = 'server1'
+NO_FLAGS_HOST_NAME = 'server2'
 UNEXPECTED_HOST_NAME = 'no-such-host'
 
 # Expected count of sync targets for the VALID_HOST_NAME host
@@ -36,6 +37,12 @@ EXPECTED_SYNC_TARGET_COUNT = 2
 EXPECTED_HOSTS_COUNT = 3
 EXPECTED_SOURCES_COUNT = 2
 EXPECTED_HOSTS_TOTAL_TARGETS_COUNT = 5
+
+EXPECTED_HOST_TARGET_FLAGS = [
+    '--usermap=demo:dummy',
+    '--iconv=UTF-8-MAC,UTF-8',
+    '--rsync-path=/usr/local/bin/rsync',
+]
 
 # test configuration files for old configuration sections
 OLD_FORMAT_ICONV_CONFIG = TEST_DATA.joinpath('old_format_iconv_flags.yml')
