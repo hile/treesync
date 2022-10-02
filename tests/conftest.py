@@ -39,6 +39,7 @@ EXPECTED_SOURCES_COUNT = 2
 EXPECTED_HOSTS_TOTAL_TARGETS_COUNT = 5
 
 EXPECTED_HOST_TARGET_FLAGS = [
+    '--archive',
     '--usermap=demo:dummy',
     '--iconv=UTF-8-MAC,UTF-8',
     '--rsync-path=/usr/local/bin/rsync',

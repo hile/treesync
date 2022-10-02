@@ -120,6 +120,15 @@ class Target:
         return self.settings.__config_root__.defaults
 
     @property
+    def host_configuration(self):
+        """
+        Get host configuration
+        """
+        if not self.hostname:
+            return None
+        return self.settings.__config_root__.hosts.get(self.hostname)
+
+    @property
     def excluded(self) -> List[Path]:
         """
         Return list of excluded filenames applicable to target
@@ -169,6 +178,10 @@ class Target:
         for flag in self.settings.flags:
             if flag not in flags:
                 flags.append(flag)
+        if self.host_configuration:
+            for flag in self.host_configuration.destination_server_flags:
+                if flag not in flags:
+                    flags.append(flag)
         for flag in self.settings.destination_server_flags:
             if flag not in flags:
                 flags.append(flag)
