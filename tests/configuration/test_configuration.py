@@ -200,7 +200,7 @@ def test_configuration_old_format_remote_server_config(mock_no_user_sync_config)
     # Server with empty (but defined) configuration section settings
     dummy_target = config.targets.get(DUMMY_TARGET_NAME)
     assert dummy_target.hostname == DUMMY_SERVER_NAME
-    assert dummy_target.__repr__() == f'{DUMMY_SERVER_NAME}:{DUMMY_TARGET_NAME}'
+    assert dummy_target.__repr__() == DUMMY_TARGET_NAME
 
     assert dummy_target.settings.destination_server_settings == {}
     assert dummy_target.settings.destination_server_flags == []

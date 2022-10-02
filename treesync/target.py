@@ -77,8 +77,6 @@ class Target:
         self.__excludes_file__ = None
 
     def __repr__(self) -> str:
-        if self.hostname:
-            return f'{self.hostname}:{self.name}'
         return self.name
 
     def __eq__(self, other):
