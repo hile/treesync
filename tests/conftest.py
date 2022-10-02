@@ -30,7 +30,7 @@ VALID_HOST_NAME = 'server1'
 NO_FLAGS_HOST_NAME = 'server2'
 UNEXPECTED_HOST_NAME = 'no-such-host'
 
-HOST_TARGET_NAME = f'{VALID_HOST_NAME}:{VALID_TARGET_NAME}'
+HOST_TARGET_NAME = f'{VALID_HOST_NAME}:data'
 
 # Expected count of sync targets for the VALID_HOST_NAME host
 EXPECTED_SYNC_TARGET_COUNT = 2

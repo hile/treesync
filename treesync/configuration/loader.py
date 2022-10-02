@@ -7,12 +7,13 @@ from typing import List, Optional
 from sys_toolkit.configuration.yaml import YamlConfiguration
 
 from ..constants import DEFAULT_CONFIGURATION_PATHS
+from ..target import Target, TargetList
 
 from .defaults import Defaults
 from .hosts import HostsSettings
 from .servers import ServersConfigurationSection
 from .sources import SourcesConfigurationSection
-from .targets import TargetsConfigurationSection, Target
+from .targets import TargetsConfigurationSection
 
 
 class Configuration(YamlConfiguration):
@@ -24,7 +25,7 @@ class Configuration(YamlConfiguration):
     servers: Optional[ServersConfigurationSection] = None
     sources: Optional[SourcesConfigurationSection] = None
     targets: Optional[TargetsConfigurationSection] = None
-    __sync_targets__: Optional[List[Target]] = None
+    __sync_targets__: Optional[TargetList] = None
 
     __default_paths__ = []
     __section_loaders__ = (
@@ -48,13 +49,14 @@ class Configuration(YamlConfiguration):
         Get configured sync targets
         """
         if self.__sync_targets__ is None:
-            targets = []
+            targets = TargetList()
             for host in self.hosts:  # pylint: disable=not-an-iterable
                 for target in host.sync_targets:
                     targets.append(target)
             for target in self.targets.sync_targets:  # pylint: disable=not-an-iterable
                 if target not in targets:
                     targets.append(target)
+            targets.sort()
             self.__sync_targets__ = targets
         return self.__sync_targets__
 

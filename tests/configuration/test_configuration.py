@@ -316,8 +316,8 @@ def test_cofiguration_sync_targets_mixed_list(mock_no_user_sync_config) -> None:
     config = Configuration(HOST_SOURCES_CONFIG)
     assert len(config.sync_targets) == EXPECTED_HOSTS_TOTAL_TARGETS_COUNT
 
-    a = config.sync_targets[-1]
-    b = config.sync_targets[0]
+    a = config.sync_targets[0]
+    b = config.sync_targets[-1]
 
     assert a == str(a)
     assert a != b

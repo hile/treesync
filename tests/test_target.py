@@ -9,6 +9,7 @@ from treesync.target import Target, TargetList
 from .conftest import (
     EXPECTED_HOSTS_TOTAL_TARGETS_COUNT,
     EXPECTED_HOST_TARGET_FLAGS,
+    HOST_TARGET_NAME,
     VALID_HOST_NAME,
     VALID_TARGET_NAME,
 )
@@ -30,7 +31,7 @@ def test_configuration_sync_targets_no_hosts(mock_no_user_sync_config):
     Test sync targets list with no host targets
     """
     config = Configuration()
-    assert isinstance(config.sync_targets, list)
+    assert isinstance(config.sync_targets, TargetList)
     assert len(config.sync_targets) == 0
 
 
@@ -40,7 +41,7 @@ def test_configuration_sync_targets_list(mock_config_host_sources):
     Test sync targets list with default host targets list
     """
     config = Configuration()
-    assert isinstance(config.sync_targets, list)
+    assert isinstance(config.sync_targets, TargetList)
     assert len(config.sync_targets) == EXPECTED_HOSTS_TOTAL_TARGETS_COUNT
 
 
@@ -56,7 +57,7 @@ def test_configuration_target_flags(mock_config_host_sources):
         assert flag in target.flags
 
 
-def test_target_list_empty():
+def test_target_list_empty(mock_config_host_sources):
     """
     Test attributes of an empty target list object
     """
@@ -66,3 +67,30 @@ def test_target_list_empty():
     assert list(obj) == []
 
     assert obj.get(VALID_TARGET_NAME) is None
+
+
+# pylint: disable=unused-argument
+def test_sync_targets_delete_and_set(mock_config_host_sources):
+    """
+    Test getting a target by name
+    """
+    config = Configuration()
+    target = config.sync_targets[0]
+    assert isinstance(target, Target)
+
+    del config.sync_targets[0]
+    assert len(config.sync_targets) == EXPECTED_HOSTS_TOTAL_TARGETS_COUNT - 1
+
+    # This replaces item, not appends
+    config.sync_targets[0] = target
+    assert len(config.sync_targets) == EXPECTED_HOSTS_TOTAL_TARGETS_COUNT - 1
+
+
+# pylint: disable=unused-argument
+def test_sync_targets_get_target(mock_config_host_sources):
+    """
+    Test getting a target by name
+    """
+    config = Configuration()
+    target = config.sync_targets.get(HOST_TARGET_NAME)
+    assert isinstance(target, Target)
