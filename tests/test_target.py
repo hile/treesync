@@ -4,12 +4,13 @@ Unit tests for treesync.target module
 from typing import List, Optional
 
 from treesync.configuration import Configuration
-from treesync.target import Target
+from treesync.target import Target, TargetList
 
 from .conftest import (
     EXPECTED_HOSTS_TOTAL_TARGETS_COUNT,
     EXPECTED_HOST_TARGET_FLAGS,
-    VALID_HOST_NAME
+    VALID_HOST_NAME,
+    VALID_TARGET_NAME,
 )
 
 
@@ -53,3 +54,15 @@ def test_configuration_target_flags(mock_config_host_sources):
     assert isinstance(target, Target)
     for flag in EXPECTED_HOST_TARGET_FLAGS:
         assert flag in target.flags
+
+
+def test_target_list_empty():
+    """
+    Test attributes of an empty target list object
+    """
+    obj = TargetList()
+    obj.sort()
+    assert len(obj) == 0
+    assert list(obj) == []
+
+    assert obj.get(VALID_TARGET_NAME) is None

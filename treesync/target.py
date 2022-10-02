@@ -5,6 +5,7 @@ Tree sync target
 import os
 import sys
 
+from collections.abc import MutableSequence
 from operator import ge, gt, le, lt
 from pathlib import Path, _windows_flavour, _posix_flavour
 from typing import List, Optional, TYPE_CHECKING
@@ -251,3 +252,62 @@ class Target:
         if not self.source.is_dir():
             raise SyncError(f'Source directory does not exist: {self.source}')
         return self.run_sync_command(*self.get_push_command_args(dry_run))
+
+
+class TargetList(MutableSequence):
+    """
+    List of targets with lookup
+    """
+    def __init__(self):
+        self.__items__ = []
+
+    def __delitem__(self, index):
+        """
+        Delete specified item from cache
+        """
+        self.__items__.__delitem__(index)
+
+    def __setitem__(self, index, value):
+        """
+        Set specified value to given index
+        """
+        self.__items__.__setitem__(index, value)
+
+    def __getitem__(self, index):
+        """
+        Get specified item from cache
+        """
+        return self.__items__.__getitem__(index)
+
+    def __len__(self):
+        """
+        Return size of collection
+        """
+        return len(self.__items__)
+
+    def __iter__(self):
+        """
+        Set specified value to given index
+        """
+        return iter(self.__items__)
+
+    def insert(self, index, value):
+        """
+        Append target to items
+        """
+        self.__items__.insert(index, value)
+
+    def sort(self, key=None, reverse=False):
+        """
+        Sort targets
+        """
+        self.__items__.sort(key=key, reverse=reverse)
+
+    def get(self, name: str) -> Optional[Target]:
+        """
+        Find first target matching specified name
+        """
+        for item in self:
+            if str(item) == name:
+                return item
+        return None
