@@ -1,9 +1,23 @@
 [tool.poetry]
 name = "treesync"
 version = "1.3.2"
-description = "Utilitiies to use rsync for whole trees"
+description = "Utilitiies to use rsync for multiple targets"
 authors = ["Ilkka Tuohela <hile@iki.fi>"]
-license = "PSF"
+readme = "README.md"
+include = [
+    "LICENSE",
+]
+license = "BSD"
+classifiers = [
+    "Environment :: Console",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Utilities",
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
