@@ -95,9 +95,9 @@ class Target:
         if isinstance(other, str):
             return op(self.__repr__(), other)
         for attr in ('hostname', 'name'):
-            a = getattr(self, attr)
-            b = getattr(other, attr)
-            if a != b:
+            a = getattr(self, attr, None)
+            b = getattr(other, attr, None)
+            if a is not None and b is not None and a != b:
                 return op(a, b)
         return default
 
