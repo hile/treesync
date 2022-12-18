@@ -167,8 +167,13 @@ class HostsSettings(ConfigurationList):
     __name__ = 'hosts'
     __dict_loader_class__ = HostConfiguration
 
-    def __init__(self, setting=None, data=None, parent=None) -> None:
-        super().__init__(setting, data, parent)
+    def __init__(self,
+                 setting=None,
+                 data=None,
+                 parent=None,
+                 debug_enabled: bool = False,
+                 silent: bool = False) -> None:
+        super().__init__(setting, data, parent, debug_enabled, silent)
         self.hosts = Hosts()
 
     @property
