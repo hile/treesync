@@ -10,7 +10,7 @@ from cli_toolkit.tests.script import validate_script_run_exception_with_args
 from treesync.bin.treesync.main import Treesync
 
 
-def test_cli_treesync_push_no_targets(monkeypatch):
+def test_cli_treesync_push_no_targets(monkeypatch) -> None:
     """
     Test running 'treesync push' without targets
     """
@@ -20,7 +20,7 @@ def test_cli_treesync_push_no_targets(monkeypatch):
         validate_script_run_exception_with_args(script, context, testargs, exit_code=1)
 
 
-def test_cli_treesync_push_invalid_targets(monkeypatch):
+def test_cli_treesync_push_invalid_targets(monkeypatch) -> None:
     """
     Test running 'treesync push' with invalid targets
     """

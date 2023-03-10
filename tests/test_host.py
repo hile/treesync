@@ -11,7 +11,7 @@ from treesync.host import Hosts, TargetHost
 from .conftest import VALID_HOST_NAME
 
 
-def test_target_host_attributes():
+def test_target_host_attributes() -> None:
     """
     Test attributes of trivial TargetHost object
     """
@@ -19,7 +19,7 @@ def test_target_host_attributes():
     assert isinstance(obj.__repr__(), str)
 
 
-def test_hosts_object_attributes():
+def test_hosts_object_attributes() -> None:
     """
     Test basic attributes of empty Hosts mapping object
     """
@@ -27,7 +27,7 @@ def test_hosts_object_attributes():
     assert len(hosts) == 0
 
 
-def test_hosts_get_create_delete():
+def test_hosts_get_create_delete() -> None:
     """
     Test getting non-existing named host entry from Hosts mapping
 

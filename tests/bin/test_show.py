@@ -16,7 +16,10 @@ EXPECTED_OUTPUT_LINES_ALL_TARGETS = 15
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_show_no_targets(mock_no_user_sync_config, capsys, monkeypatch):
+def test_cli_treesync_show_no_targets(
+        mock_no_user_sync_config,
+        capsys,
+        monkeypatch) -> None:
     """
     Test running 'treesync show' without specifying a target and with no targets to show
     """
@@ -31,7 +34,10 @@ def test_cli_treesync_show_no_targets(mock_no_user_sync_config, capsys, monkeypa
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_show_no_arguments(mock_config_old_format_server_flags, capsys, monkeypatch):
+def test_cli_treesync_show_no_arguments(
+        mock_config_old_format_server_flags,
+        capsys,
+        monkeypatch) -> None:
     """
     Test running 'treesync show' without specifying a target, listing all default targets
     """
@@ -47,7 +53,10 @@ def test_cli_treesync_show_no_arguments(mock_config_old_format_server_flags, cap
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_show_valid_target(mock_config_old_format_server_flags, capsys, monkeypatch):
+def test_cli_treesync_show_valid_target(
+        mock_config_old_format_server_flags,
+        capsys,
+        monkeypatch) -> None:
     """
     Test running 'treesync show' with a single valid target name
     """

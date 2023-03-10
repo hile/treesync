@@ -18,7 +18,10 @@ from ..conftest import (
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_list_no_targets(mock_no_user_sync_config, capsys, monkeypatch):
+def test_cli_treesync_list_no_targets(
+        mock_no_user_sync_config,
+        capsys,
+        monkeypatch) -> None:
     """
     Test running 'treesync list' without arguments
     """
@@ -33,7 +36,10 @@ def test_cli_treesync_list_no_targets(mock_no_user_sync_config, capsys, monkeypa
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_list_host_sources_targets_no_targets(mock_config_old_format_minimal, capsys, monkeypatch):
+def test_cli_treesync_list_host_sources_targets_no_targets(
+        mock_config_old_format_minimal,
+        capsys,
+        monkeypatch) -> None:
     """
     Test running 'treesync list' without arguments with the minimal old format configuration
     """
@@ -51,7 +57,10 @@ def test_cli_treesync_list_host_sources_targets_no_targets(mock_config_old_forma
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_list_host_sources_targets_valid_target(mock_config_old_format_minimal, capsys, monkeypatch):
+def test_cli_treesync_list_host_sources_targets_valid_target(
+        mock_config_old_format_minimal,
+        capsys,
+        monkeypatch) -> None:
     """
     Test running 'treesync list' with a single valid name as argument
     """
@@ -69,7 +78,10 @@ def test_cli_treesync_list_host_sources_targets_valid_target(mock_config_old_for
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_list_host_sources_targets_invalid_target(mock_config_old_format_minimal, capsys, monkeypatch):
+def test_cli_treesync_list_host_sources_targets_invalid_target(
+        mock_config_old_format_minimal,
+        capsys,
+        monkeypatch) -> None:
     """
     Test running 'treesync list' with invalid target name as an argument
     """
@@ -88,7 +100,10 @@ def test_cli_treesync_list_host_sources_targets_invalid_target(mock_config_old_f
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_list_filter_hostname_prefix(mock_config_host_sources, capsys, monkeypatch):
+def test_cli_treesync_list_filter_hostname_prefix(
+        mock_config_host_sources,
+        capsys,
+        monkeypatch) -> None:
     """
     Test filtering hostnames by hostname prefix pattern
     """
@@ -105,7 +120,10 @@ def test_cli_treesync_list_filter_hostname_prefix(mock_config_host_sources, caps
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_list_filter_name_prefix(mock_config_host_sources, capsys, monkeypatch):
+def test_cli_treesync_list_filter_name_prefix(
+        mock_config_host_sources,
+        capsys,
+        monkeypatch) -> None:
     """
     Test filtering hostnames by target name prefix pattern
     """

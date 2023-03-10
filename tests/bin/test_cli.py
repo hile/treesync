@@ -18,7 +18,7 @@ DEFAULT_ARGS = {
 }
 
 
-def test_cli_treesync_run_main():
+def test_cli_treesync_run_main() -> None:
     """
     Run main() for treesync command without arguments
     """
@@ -26,7 +26,7 @@ def test_cli_treesync_run_main():
         main()
 
 
-def test_cli_treesync_attributes():
+def test_cli_treesync_attributes() -> None:
     """
     Validate basic attributes of treesync script
     """

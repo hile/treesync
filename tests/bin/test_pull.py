@@ -25,7 +25,7 @@ EXCLUDES_FILE = TEST_DATA.joinpath('rsync.exclude')
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_pull_no_targets(mock_no_user_sync_config, monkeypatch):
+def test_cli_treesync_pull_no_targets(mock_no_user_sync_config, monkeypatch) -> None:
     """
     Test running 'treesync pull' without targets
     """
@@ -36,7 +36,7 @@ def test_cli_treesync_pull_no_targets(mock_no_user_sync_config, monkeypatch):
 
 
 # pylint: disable=unused-argument
-def test_cli_treesync_pull_invalid_targets(mock_no_user_sync_config, monkeypatch):
+def test_cli_treesync_pull_invalid_targets(mock_no_user_sync_config, monkeypatch) -> None:
     """
     Test running 'treesync push' with invalid targets
     """
@@ -47,7 +47,7 @@ def test_cli_treesync_pull_invalid_targets(mock_no_user_sync_config, monkeypatch
 
 
 # pylint: disable=unused-argument
-def test_cli_push_pull_tmpdir(mock_no_user_sync_config, tmpdir, monkeypatch):
+def test_cli_push_pull_tmpdir(mock_no_user_sync_config, tmpdir, monkeypatch) -> None:
     """
     Test pull and push with tmpdir
     """
@@ -76,7 +76,7 @@ def test_cli_push_pull_tmpdir(mock_no_user_sync_config, tmpdir, monkeypatch):
 
 
 # pylint: disable=unused-argument
-def test_cli_push_pull_tmpdir_error(mock_no_user_sync_config, tmpdir, monkeypatch):
+def test_cli_push_pull_tmpdir_error(mock_no_user_sync_config, tmpdir, monkeypatch) -> None:
     """
     Test pull and push with tmpdir and errors in running the commands
     """

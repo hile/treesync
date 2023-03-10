@@ -8,6 +8,7 @@ Pytest configuration for all tests
 """
 import os
 from pathlib import Path
+from typing import Iterator
 
 import pytest
 
@@ -58,7 +59,7 @@ OLD_FORMAT_SERVER_FLAGS_CONFIG = TEST_DATA.joinpath('old_format_servers.yml')
 
 
 @pytest.fixture(autouse=True)
-def common_fixtures(cli_mock_argv):
+def common_fixtures(cli_mock_argv) -> None:
     """
     Wrap cli_mock_argv to be used in all tests
     """
@@ -66,7 +67,7 @@ def common_fixtures(cli_mock_argv):
 
 
 @pytest.fixture
-def mock_no_user_sync_config():
+def mock_no_user_sync_config(monkeypatch) -> None:
     """
     Mock user configuration path
     """
@@ -81,38 +82,41 @@ def mock_no_user_sync_config():
             return False
         return os.path.isfile(str(self))
 
-    # pylint: disable=import-outside-toplevel
-    from _pytest.monkeypatch import MonkeyPatch
-    monkeypatch = MonkeyPatch()
     monkeypatch.setattr(Path, 'exists', exists)
     monkeypatch.setattr(Path, 'is_file', is_file)
 
-    yield monkeypatch
-    monkeypatch.undo()
-
 
 @pytest.fixture
-def mock_config_old_format_minimal(monkeypatch):
+def mock_config_old_format_minimal(monkeypatch) -> Iterator[Path]:
     """
     Mock a treesync setup using the OLD_FORMAT_MINIMAL_CONFIG configuration file
     """
-    monkeypatch.setattr('treesync.configuration.loader.DEFAULT_CONFIGURATION_PATHS', [OLD_FORMAT_MINIMAL_CONFIG])
-    return OLD_FORMAT_MINIMAL_CONFIG
+    monkeypatch.setattr(
+        'treesync.configuration.loader.DEFAULT_CONFIGURATION_PATHS',
+        [OLD_FORMAT_MINIMAL_CONFIG]
+    )
+    yield OLD_FORMAT_MINIMAL_CONFIG
 
 
 @pytest.fixture
-def mock_config_old_format_server_flags(monkeypatch):
+def mock_config_old_format_server_flags(monkeypatch) -> Iterator[Path]:
     """
     Mock a treesync setup using the OLD_FORMAT_SERVER_FLAGS_CONFIG configuration file
     """
-    monkeypatch.setattr('treesync.configuration.loader.DEFAULT_CONFIGURATION_PATHS', [OLD_FORMAT_SERVER_FLAGS_CONFIG])
-    return OLD_FORMAT_SERVER_FLAGS_CONFIG
+    monkeypatch.setattr(
+        'treesync.configuration.loader.DEFAULT_CONFIGURATION_PATHS',
+        [OLD_FORMAT_SERVER_FLAGS_CONFIG]
+    )
+    yield OLD_FORMAT_SERVER_FLAGS_CONFIG
 
 
 @pytest.fixture
-def mock_config_host_sources(monkeypatch):
+def mock_config_host_sources(monkeypatch) -> Iterator[Path]:
     """
     Mock a treesync setup using the HOST_SOURCES_CONFIG configuration file
     """
-    monkeypatch.setattr('treesync.configuration.loader.DEFAULT_CONFIGURATION_PATHS', [HOST_SOURCES_CONFIG])
-    return HOST_SOURCES_CONFIG
+    monkeypatch.setattr(
+        'treesync.configuration.loader.DEFAULT_CONFIGURATION_PATHS',
+        [HOST_SOURCES_CONFIG]
+    )
+    yield HOST_SOURCES_CONFIG

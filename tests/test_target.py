@@ -31,7 +31,7 @@ def get_first_sync_target(hostname: str, sync_targets: List) -> Optional[Target]
 
 
 # pylint: disable=unused-argument
-def test_configuration_sync_targets_no_hosts(mock_no_user_sync_config):
+def test_configuration_sync_targets_no_hosts(mock_no_user_sync_config) -> None:
     """
     Test sync targets list with no host targets
     """
@@ -41,7 +41,7 @@ def test_configuration_sync_targets_no_hosts(mock_no_user_sync_config):
 
 
 # pylint: disable=unused-argument
-def test_configuration_sync_targets_list(mock_config_host_sources):
+def test_configuration_sync_targets_list(mock_config_host_sources) -> None:
     """
     Test sync targets list with default host targets list
     """
@@ -51,7 +51,7 @@ def test_configuration_sync_targets_list(mock_config_host_sources):
 
 
 # pylint: disable=unused-argument
-def test_configuration_target_flags(mock_config_host_sources):
+def test_configuration_target_flags(mock_config_host_sources) -> None:
     """
     Test loading flags for sync target with flags
     """
@@ -62,7 +62,7 @@ def test_configuration_target_flags(mock_config_host_sources):
         assert flag in target.flags
 
 
-def test_target_list_empty(mock_config_host_sources):
+def test_target_list_empty(mock_config_host_sources) -> None:
     """
     Test attributes of an empty target list object
     """
@@ -75,7 +75,7 @@ def test_target_list_empty(mock_config_host_sources):
 
 
 # pylint: disable=unused-argument
-def test_sync_targets_delete_and_set(mock_config_host_sources):
+def test_sync_targets_delete_and_set(mock_config_host_sources) -> None:
     """
     Test getting a target by name
     """
@@ -92,7 +92,7 @@ def test_sync_targets_delete_and_set(mock_config_host_sources):
 
 
 # pylint: disable=unused-argument
-def test_sync_targets_get_target(mock_config_host_sources):
+def test_sync_targets_get_target(mock_config_host_sources) -> None:
     """
     Test getting a target by name
     """
