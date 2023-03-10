@@ -1,13 +1,14 @@
 [tool.poetry]
 name = "treesync"
-version = "1.4.5"
+version = "1.5.0"
 description = "Utilitiies to use rsync for multiple targets"
 authors = ["Ilkka Tuohela <hile@iki.fi>"]
+homepage = "https://github.com/hile/treesync"
 readme = "README.md"
 include = [
     "LICENSE",
 ]
-license = "BSD"
+license = "BSD-3-Clause"
 classifiers = [
     "Environment :: Console",
     "License :: OSI Approved :: BSD License",

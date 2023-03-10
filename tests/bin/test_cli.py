@@ -1,7 +1,11 @@
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 """
 Unit tests for 'treesync' command main class
 """
-
 import pytest
 
 from cli_toolkit.tests.script import validate_script_attributes

@@ -1,4 +1,11 @@
-
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
+"""
+CLI too 'treesync' main entrypoint
+"""
 from cli_toolkit.script import Script
 
 from .commands.list import List

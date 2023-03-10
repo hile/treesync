@@ -1,7 +1,11 @@
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 """
 Unit tests for treesync.configuration common loader methods
 """
-
 import shutil
 from pathlib import Path
 

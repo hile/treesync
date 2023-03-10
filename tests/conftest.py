@@ -1,7 +1,11 @@
+#
+# Copyright (C) 2020-2023 by Ilkka Tuohela <hile@iki.fi>
+#
+# SPDX-License-Identifier: BSD-3-Clause
+#
 """
 Pytest configuration for all tests
 """
-
 import os
 from pathlib import Path
 
