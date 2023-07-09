@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "treesync"
-version = "1.5.0"
+version = "1.5.1"
 description = "Utilitiies to use rsync for multiple targets"
 authors = ["Ilkka Tuohela <hile@iki.fi>"]
 homepage = "https://github.com/hile/treesync"
