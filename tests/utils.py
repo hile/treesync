@@ -9,9 +9,9 @@ Utilities for treesync unit tests
 import pathlib
 import shutil
 
-import yaml
+from pathlib import Path
 
-from pathlib_tree.tree import Tree
+import yaml
 
 
 def create_test_config(path, name, source, destination, **kwargs):
@@ -40,7 +40,9 @@ def create_source_directory(tmpdir, excludes_file=None):
     destination = pathlib.Path(tmpdir, 'dst/path')
     config_file = pathlib.Path(tmpdir, 'test.yml')
 
-    Tree(source.parent).create()
+    parent = Path(source.parent)
+    if not parent.is_dir():
+        parent.mkdir(parents=True)
     shutil.copytree(pathlib.Path(__file__).parent, source)
 
     if excludes_file is not None:

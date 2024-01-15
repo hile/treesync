@@ -6,12 +6,11 @@
 """
 Tree sync target
 """
-import os
 import sys
 
 from collections.abc import MutableSequence
 from operator import ge, gt, le, lt
-from pathlib import Path, _windows_flavour, _posix_flavour
+from pathlib import Path
 from typing import List, Optional, TYPE_CHECKING
 
 from tempfile import NamedTemporaryFile
@@ -29,9 +28,6 @@ class ExcludesFile(Path):
     """
     Rsync excludes parser
     """
-    # pylint: disable=protected-access
-    _flavour = _windows_flavour if os.name == 'nt' else _posix_flavour
-
     @property
     def excludes(self) -> List[LineTextFile]:
         """
@@ -227,8 +223,8 @@ class Target:
         """
         args = self.get_rsync_cmd_args(dry_run=dry_run)
         args.extend([
-            f'{self.destination.rstrip("/")}/',
-            f'{str(self.source).rstrip("/")}/',
+            f"""{self.destination.rstrip('/')}/""",
+            f"""{str(self.source).rstrip('/')}/""",
         ])
         return args
 
@@ -238,8 +234,8 @@ class Target:
         """
         args = self.get_rsync_cmd_args(dry_run=dry_run)
         args.extend([
-            f'{str(self.source).rstrip("/")}/',
-            f'{self.destination.rstrip("/")}/',
+            f"""{str(self.source).rstrip('/')}/""",
+            f"""{self.destination.rstrip('/')}/""",
         ])
         return args
 

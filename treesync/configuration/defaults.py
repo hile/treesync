@@ -7,7 +7,7 @@
 Configuration defaults for hosts
 """
 from sys_toolkit.configuration.base import ConfigurationSection
-from pathlib_tree.tree import SKIPPED_PATHS
+from ..constants import SKIPPED_PATHS
 
 from ..constants import (
     DEFAULT_EXCLUDES,

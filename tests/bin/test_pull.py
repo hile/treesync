@@ -8,8 +8,8 @@ Unit tests for 'treesync pull' command
 """
 import sys
 
+from pathlib import Path
 from subprocess import CalledProcessError
-from pathlib_tree.tree import Tree
 
 import pytest
 
@@ -56,7 +56,9 @@ def test_cli_push_pull_tmpdir(mock_no_user_sync_config, tmpdir, monkeypatch) -> 
     assert source.exists()
     assert not destination.exists()
 
-    Tree(destination.parent).create()
+    parent = Path(destination.parent)
+    if not parent.is_dir():
+        parent.mkdir(parents=True)
     script = Treesync()
 
     testargs = ['treesync', 'push', '--config', str(config_file), 'test']
@@ -87,7 +89,9 @@ def test_cli_push_pull_tmpdir_error(mock_no_user_sync_config, tmpdir, monkeypatc
     assert source.exists()
     assert not destination.exists()
 
-    Tree(destination.parent).create()
+    parent = Path(destination.parent)
+    if not parent.is_dir():
+        parent.mkdir(parents=True)
     script = Treesync()
 
     testargs = ['treesync', 'push', '--config', str(config_file), 'test']

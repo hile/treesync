@@ -23,7 +23,9 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-pathlib-tree = "^2"
+sys-toolkit = "^2.5.1"
+cli-toolkit = "^2.5.1"
+mypy = "^1.8.0"
 
 [tool.poetry.group.dev.dependencies]
 coverage = "^7"

@@ -13,6 +13,16 @@ DEFAULT_CONFIGURATION_PATHS = (
     Path('~/.config/treesync.yml').expanduser(),
 )
 
+SKIPPED_PATHS = [
+    '.DocumentRevisions-V100',
+    '.Spotlight-V100',
+    '.TemporaryItems',
+    '.Trashes',
+    '.fseventsd',
+    '.metadata_never_index',
+    'TheVolumeSettingsFolder',
+]
+
 #: Filename in source directory automatically added as rsync exclude
 DEFAULT_EXCLUDES_FILE = '.rsync.exclude'
 

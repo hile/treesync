@@ -11,12 +11,12 @@ from pathlib import Path
 
 import pytest
 
-from pathlib_tree.tree import Tree, SKIPPED_PATHS
 from treesync.configuration.sources import SourcesConfigurationSection
 from treesync.configuration import Configuration
 from treesync.constants import (
     DEFAULT_EXCLUDES,
     DEFAULT_FLAGS,
+    SKIPPED_PATHS,
 )
 from treesync.exceptions import ConfigurationError
 from treesync.target import ExcludesFile, Target, SyncError
@@ -268,7 +268,9 @@ def test_configuration_old_format_sync_target_tmpdir(tmpdir) -> None:
     for value in expected_excludes:
         assert value in target.excluded
 
-    Tree(destination.parent).create()
+    parent = Path(destination.parent)
+    if not parent.is_dir():
+        parent.mkdir(parents=True)
 
     assert not Path(destination).exists()
     target.push()
